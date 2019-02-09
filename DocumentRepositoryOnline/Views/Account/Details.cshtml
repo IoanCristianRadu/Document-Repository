@@ -1,0 +1,111 @@
+﻿@model DocumentRepositoryOnline.Models.Account
+
+@{
+    ViewBag.Title = "LoggedIn";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+
+
+
+<div>
+
+    <dl class="dl-horizontal rectangle">
+        <h1>Account</h1>
+        <hr />
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+
+        <dd>
+            <p>
+                @Html.ActionLink("Edit", "Edit", "", htmlAttributes: new { @class = "btn btn-primary myButton" })
+            </p>
+        </dd>
+
+    </dl>
+</div>
+
+<style>
+    .rectangle {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        margin: 20px 20px;
+        padding: 30px;
+        box-sizing: border-box;
+        position: relative;
+        margin: auto;
+        width: 50%;
+        padding: 10px;
+        margin-top: 100px;
+        background: rgba(255,255,255,0.9);
+        text-align: center;
+    }
+
+    .myInput {
+        margin: auto;
+        margin-top: 10px;
+        text-align: center;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .myButton {
+        position: relative;
+        margin: auto;
+        box-sizing: border-box;
+        width: 19%;
+        margin-top: 25px !important;
+        margin-bottom: 25px;
+        font-size: 20px;
+    }
+
+    .textAlignCenter {
+        text-align: center;
+        font-weight: bold;
+    }
+</style>

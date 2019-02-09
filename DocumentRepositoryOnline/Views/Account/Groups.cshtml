@@ -1,0 +1,90 @@
+﻿@model DocumentRepositoryOnline.Models.Groups
+@{
+    ViewBag.Title = "Groups";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+<div class="createGroupRectangle">
+    <h1>Create a new group</h1>
+    @using (Html.BeginForm("CreateGroup", "Account", FormMethod.Post))
+    {
+        @Html.EditorFor(model => model.groupName, new { htmlAttributes = new { @class = "form-control myCentered centeredText", @placeholder = "Group name" } })
+        <button class="btn btn-warning marginTop myButton" title="Create" type="submit">Create</button>
+    }
+
+</div>
+
+@if (Model.groupList != null)
+{
+    foreach (DocumentRepositoryOnline.Models.Group group in Model.groupList)
+    {
+        <div class="rectangle">
+            <p>@group.GroupName</p>
+            <p>@group.MemberType</p>
+            <p>
+                @using (Html.BeginForm("GoToGroup", "Storage", new { groupName = @group.GroupName }))
+                {
+                    <button class="btn btn-primary btn-lg" title="Open group">Open group</button>
+                }
+            </p>
+        </div>
+    }
+}
+
+
+<style>
+    .myCentered {
+        margin: auto;
+        margin-top: 20px;
+        height: 50px;
+    }
+
+    .centeredText {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .createGroupRectangle {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        padding: 30px;
+        box-sizing: border-box;
+        width: 75%;
+        float: inherit;
+        position: relative;
+        text-align: center;
+        margin: auto;
+    }
+
+    .rectangle {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        margin: 20px 20px;
+        padding: 30px;
+        box-sizing: border-box;
+        width: 29%;
+        float: left;
+        position: relative;
+    }
+
+    .marginTop {
+        margin-top: 20px !important;
+    }
+
+    .fixedButton {
+        position: fixed;
+        left: 10px;
+        top: 60px;
+    }
+
+    .myButton {
+        position: relative;
+        margin: auto;
+        box-sizing: border-box;
+        width: 19%;
+        margin-top: 25px !important;
+        margin-bottom: 25px;
+        font-size: 20px;
+    }
+</style>

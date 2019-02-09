@@ -1,0 +1,262 @@
+﻿@model DocumentRepositoryOnline.Models.FoldersAndFiles
+@{
+    ViewBag.Title = "GroupContent";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+
+@using (Html.BeginForm("GroupContent", "Storage", FormMethod.Post, new { enctype = "multipart/form-data", @class = "myForm" }))
+{
+
+    <div>
+        <h2>Insert files</h2>
+        @Html.TextBox("files", "", new { @type = "file", @class = "myInsertFiles", multiple = "multiple" }) <br />
+
+        <input type="submit" value="Upload" class="btn btn-warning" />
+
+        @ViewBag.Message
+
+    </div>
+}
+
+@using (Html.BeginForm("GroupCreateFolder", "Storage", FormMethod.Post, new { @class = "myForm" }))
+{
+    <h2>Create folder</h2>
+    @Html.EditorFor(model => model.createFolderPath, new { htmlAttributes = new { @class = "form-control", @placeHolder = "Folder name:" } })
+    @Html.ValidationMessageFor(model => model.createFolderPath, "", new { @class = "text-danger" })
+    <input type="submit" value="Create folder" class="btn btn-warning myMarginTop " />
+}
+
+@using (Html.BeginForm("GroupAddMember", "Storage", FormMethod.Post, new { @class = "myForm" }))
+{
+    <div>
+        <h2>Add member</h2>
+        @Html.EditorFor(model => model.addEmail, new { htmlAttributes = new { @class = "form-control text-box single-line", @placeHolder = "Email:" } })
+        @Html.ValidationMessageFor(model => model.addEmail, "", new { @class = "text-danger" })
+
+        <input type="submit" value="Add member" class="btn btn-warning mySmallMargin" />
+    </div>
+}
+@using (Html.BeginForm("ViewMemberList", "Storage"))
+{
+    <button class="btn btn-warning myFloatRight" title="View Member List">View Member List</button>
+}
+
+
+<div class="bs-docs-section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="page-header">
+                <h1 id="tables">Files uploaded</h1>
+                <div class="mySearchDiv">
+                    @using (Html.BeginForm("SearchGroup", "Storage", FormMethod.Get))
+                    {
+                        <button class="btn btn-warning mySearchBtn" title="Search Group">Search Group</button>
+                    }
+                </div>
+                @if (Session["GroupPath"] != null && Session["RootPath"] != null)
+                {
+                    string[] splitter1 = Session["GroupPath"].ToString().Split('\\');
+                    string[] splitter2 = Session["RootPath"].ToString().Split('\\');
+                    String pathName = "\\";
+                    if (splitter1.Length != splitter2.Length)
+                    {
+                        for (int i = splitter2.Length - 1; i < splitter1.Length; i++)
+                        {
+                            pathName = pathName + splitter1[i] + "\\";
+                        }
+                        <p>@pathName</p>
+                    }
+
+                }
+                @if (Session["GroupMoving"] != null)
+                {
+                    if (Session["GroupMoving"].ToString() == "true")
+                    {
+                        using (Html.BeginForm("GroupMoveHere", "Storage"))
+                        {
+                            <button class="btn btn-success" title="Move Here" type="submit">MOVE HERE</button>
+                        }
+                        using (Html.BeginForm("GroupCancelMoving", "Storage"))
+                        {
+                            <button class="btn btn-success" title="Cancel" type="submit">Cancel</button>
+                        }
+                        if (Session["GroupMovingThingName"] != null)
+                        {
+                            <p>@Session["GroupMovingThingName"].ToString()</p>
+                        }
+                    }
+                }
+
+            </div>
+
+            <div class="bs-component">
+                <table class="table table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Pages</th>
+                            <th>Date Added</th>
+                            <th>File Size</th>
+                            <th>Added by</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            Model.folderList.folderList.Sort();
+                            foreach (DocumentRepositoryOnline.Models.Folder folder in Model.folderList.folderList)
+                            {
+                                string[] folderPathSplit = folder.LocalPath.Split('\\');
+                                <tr>
+                                    <td>@folderPathSplit[folderPathSplit.Length - 1]</td>
+                                    <td>folder</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>@Model.fileList.FileDetailsList[0].AccountEmail</td>
+                                    <td>
+                                        @using (Html.BeginForm("GroupOpenFolder", "Storage", new { folderPath = @folder.LocalPath }))
+                                        {
+                                            <button class="btn btn-inverse" title="Log out" type="submit">Open folder</button>
+                                        }
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("GroupMoveFolder", "Storage", new { folderPath = @folder.LocalPath }))
+                                        {
+                                            <button class="btn btn-inverse" title="Move" type="submit">Move</button>
+                                        }
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("GroupDeleteFolder", "Storage", new { folderPath = @folder.LocalPath }))
+                                        {
+                                            <button class="btn btn-danger" title="Delete" type="submit">Delete</button>
+                                        }
+                                    </td>
+                                    @*<td><a href="@file.Path">Download</a></td>*@
+                                </tr>
+                            }
+                            foreach (DocumentRepositoryOnline.Models.FileDetails file in Model.fileList.FileDetailsList)
+                            {
+                                <tr>
+                                    <td>@((file.Title.Split('.'))[0])</td>
+                                    <td>@((file.Title.Split('.'))[1])</td>
+                                    <td>@file.Pages</td>
+                                    <td>@file.DateCreated</td>
+                                    <td>@file.FileSize kb</td>
+                                    <td>@file.AccountEmail</td>
+                                    <td>
+                                        @using (Html.BeginForm("GroupDownload", "Storage", new { Path = @file.Path + "\\" + @file.Title }))
+                                        {
+                                            <button class="btn btn-inverse" title="Log out" type="submit">Download</button>
+                                        }
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("GroupMoveFile", "Storage", new { Path = @file.Path + "\\" + @file.Title }))
+                                        {
+                                            <button class="btn btn-inverse" title="Move" type="submit">Move</button>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @using (Html.BeginForm("GroupDeleteFile", "Storage", new { filePath = @file.Path + "\\" + @file.Title }))
+                                        {
+                                            <button class="btn btn-danger" title="Delete" type="submit">Delete</button>
+                                        }
+                                    </td>
+
+                                    @*<td><a href="@file.Path">Download</a></td>*@
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+                <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div>
+            </div><!-- /example -->
+        </div>
+    </div>
+</div>
+@if (Session["GroupPath"] != null && Session["RootPath"] != null)
+{
+    if (!(Session["GroupPath"].ToString() == Session["RootPath"].ToString()))
+    {
+        if ((Session["GroupPath"].ToString().Split('\\'))[Session["GroupPath"].ToString().Split('\\').Length - 1] != Session["RootPath"].ToString())
+        {
+            <div>
+                @using (Html.BeginForm("GroupBtnBack", "Storage"))
+                {
+                    <button class="btn btn-inverse" title="Back">Back</button>
+                }
+            </div>
+        }
+    }
+}
+
+<style>
+    .myForm {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        margin: 20px 20px;
+        padding: 30px;
+        box-sizing: border-box;
+        width: 29%;
+        float: left;
+        position: relative;
+    }
+
+    .myBorderTop {
+        /*border-top-width: 0px;
+        margin-top: 10px;*/
+    }
+
+    .myInsertFiles {
+        padding: 15px 16px 13px;
+        line-height: 15px;
+        text-transform: uppercase;
+        border-width: 0 1px 4px 1px;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 5px;
+        color: #ffffff;
+        background-color: #158cba;
+        border-color: #127ba3;
+        touch-action: manipulation;
+        cursor: pointer;
+        background-image: none;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        text-align: center;
+        vertical-align: middle;
+        display: inline-block;
+        margin-bottom: 0;
+    }
+
+    .myMarginTop {
+        margin-top: 30px !important;
+    }
+
+    .mySmallMargin {
+        margin-top: 10px !important;
+    }
+
+    .mySearchBtn {
+        margin-top: 0px;
+        position: relative;
+        float: right;
+        width: 40%;
+    }
+
+    .mySearchDiv {
+        margin-top: 0px;
+        position: relative;
+        float: right;
+        width: 70%;
+    }
+
+    .myFloatRight {
+        position: relative;
+        float: right;
+    }
+</style>

@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="DocumentRepositoryOnline.BundleConfig" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\BundleConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.FilterConfig" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\FilterConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.EmailService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\IdentityConfig.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocumentRepositoryOnline.RouteConfig" Collapsed="true">
+    <Position X="12.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\RouteConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.MvcApplication" Collapsed="true">
+    <Position X="8.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Global.asax.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Controllers.AccountController" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAABAAAAAAAAAAAAAAABAAACAAEQAAAABAQ=</HashCode>
+      <FileName>Controllers\AccountController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Controllers.HomeController" Collapsed="true">
+    <Position X="7" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEACAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\HomeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Controllers.StorageController" Collapsed="true">
+    <Position X="7" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQMUMIIEIEEoAAIEAAAIMUIAAAABAgAAAEACABAAMA=</HashCode>
+      <FileName>Controllers\StorageController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.DocumentRepository.DBSingleton" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAYIAIAjBAIEQjEAtjiABAUAIAAABQIEAAEAAAA=</HashCode>
+      <FileName>DocumentRepository\DBSingleton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.DocumentRepository.FilesTraverse" Collapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAABAAAAIAAAACAAAACAAAAAgAAAAAAAEAAAA=</HashCode>
+      <FileName>DocumentRepository\FilesTraverse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.DocumentRepository.Record" Collapsed="true">
+    <Position X="10.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAUAQGAhAEBgoAAIBIAACEQAAQBQAAEAAAAAgAA=</HashCode>
+      <FileName>DocumentRepository\Record.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.DocumentRepository.FileHandlers.OfficeHandler">
+    <Position X="0.5" Y="5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>DocumentRepository\FileHandlers\OfficeHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.DocumentRepository.FileHandlers.PdfHandler">
+    <Position X="2.75" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>DocumentRepository\FileHandlers\PdfHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.DocumentRepository.FileHandlers.TextHandler">
+    <Position X="1.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAwGAAAAAAAAACAIAAAAAEAAAAAgEAAAAAgAA=</HashCode>
+      <FileName>DocumentRepository\FileHandlers\TextHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.Account" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAAAAAAAAIAAAAAAAAAAAACAQIEAAAAAAg=</HashCode>
+      <FileName>Models\Account.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.FileDetails" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAgEZggAAAAAACAAAAAQAIAAAEAAAAAAA=</HashCode>
+      <FileName>Models\FileDetails.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.FileDetailsVector" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAA=</HashCode>
+      <FileName>Models\FileDetailsVector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.Folder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAQAAIAAAAAAACAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Models\Folder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.Folders" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Folders.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.FoldersAndFiles" Collapsed="true">
+    <Position X="7" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAggAAAAQAAAAA=</HashCode>
+      <FileName>Models\FoldersAndFiles.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.Group" Collapsed="true">
+    <Position X="8.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAE=</HashCode>
+      <FileName>Models\Group.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.GroupMember" Collapsed="true">
+    <Position X="10.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIABAAAAAAAAAAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Models\GroupMember.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.GroupMembers" Collapsed="true">
+    <Position X="12.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\GroupMembers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.Groups" Collapsed="true">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Groups.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocumentRepositoryOnline.Models.Search" Collapsed="true">
+    <Position X="5.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAQAAAEAAAgAAAAoAAAAAAAAAAkAEAAACAAAA=</HashCode>
+      <FileName>Models\Search.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

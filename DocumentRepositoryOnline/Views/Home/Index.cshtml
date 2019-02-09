@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<div class="rectangle">
+    <h1 class="myCenteredText myOpacity">Document Repository Online</h1>
+    <a href="/Account/Login" class="btn btn-primary btn-lg myButton myOpacity">Log in &raquo;</a>
+    <a href="/Account/Register" class="btn btn-primary btn-lg myButton myOpacity myLeftButton">Register &raquo;</a>
+</div>
+<h1 class="mySlogan">Don't worry! Your documents are safe with us.</h1>
+<style>
+    .rectangle {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        margin: 20px 20px;
+        padding: 30px;
+        box-sizing: border-box;
+        position: relative;
+        margin: auto;
+        width: 50%;
+        padding: 10px;
+        margin-top: 200px;
+        opacity: 0.85;
+    }
+
+    .myOpacity {
+        opacity: 1;
+    }
+
+    .marginTop {
+        margin-top: 20px;
+    }
+
+    .myCenteredText {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .myButton {
+        position: relative;
+        margin: auto;
+        box-sizing: border-box;
+        width: 49%;
+        margin-top: 25px !important;
+        margin-bottom: 25px;
+        font-size: 20px;
+    }
+
+    .myLeftButton {
+        margin-left: 1.4%;
+    }
+
+    .mySlogan {
+        margin-top: 121px;
+        text-align: center;
+        margin-right: 50px;
+        color: white;
+        font-style: italic;
+        font-size: 55px;
+        margin-left: 50px;
+        opacity: 0.6;
+    }
+</style>

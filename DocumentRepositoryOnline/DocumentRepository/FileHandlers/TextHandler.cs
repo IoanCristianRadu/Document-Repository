@@ -27,7 +27,6 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
         public string path = "";
         public string name;
 
-
         public TextHandler(FileInfo f)
         {
             this.last_modified = f.LastWriteTime;
@@ -48,7 +47,7 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
         public virtual void extractContent()
         {
             int splitLength = 3000;
-            if (extension == ".txt" || extension == ".html")// + ".htm", <tag> doar pentru .htm / .html
+            if (extension == ".txt" || extension == ".html")
             {
                 string fileContent = System.IO.File.ReadAllText(path);
                 for (int index = 0; index < fileContent.Length; index = index + splitLength)
@@ -61,26 +60,21 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                     {
                         content.Add(fileContent.Substring(index));
                     }
-
                 }
-
             }
-
         }
+
         public void writeToDB(OracleCommand cmd,int? folderId)
         {
-            //Insert file details for file
             cmd.CommandText = "Insert into file_details VALUES (default, TO_DATE('"+ this.last_modified + "' , 'mm/dd/yyyy HH:MI:SS AM') , TO_DATE('" + this.date_created + "' , 'mm/dd/yyyy HH:MI:SS AM' ) , " + this.fileSize + ",'" + this.extension + "','" + this.author + "','" + this.title + "'," + this.pages + "," + (folderId.GetValueOrDefault() == 0 ? "null" : folderId.ToString()) + ")";
             int rowsUpdated = cmd.ExecuteNonQuery();
 
-            //get current file_details_id
             int file_details_id;
             file_details_id = DBSingleton.getCurrentSeqValue("file_details_id.currval");
 
             int i = 1;
             foreach (String s in this.content)
             {
-                //Unidecode transforma ’ in ' 
                 String page = s.Unidecode();
                 page = page.Replace("'", "''");
                 cmd.CommandText = "Insert into content_data values(default,'" + page + "'," + i + "," + (folderId.GetValueOrDefault() == 0 ? "null" : folderId.ToString()) + "," + file_details_id + ")";

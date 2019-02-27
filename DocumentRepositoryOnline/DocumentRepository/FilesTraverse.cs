@@ -16,15 +16,10 @@ using DocumentRepositoryOnline.DocumentRepository.FileHandlers;
 
 namespace DocumentRepositoryOnline.DocumentRepository
 {
-
-
-
     class FilesTraverse
     {
         private Dictionary<FileInfo, int> listaFisiere = new Dictionary<FileInfo, int>();
         String path;
-        //int progressPercentage;
-        //ProgressBar progressBar;
 
         public String Path
         {
@@ -69,7 +64,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
             return false;
         }
 
-        public static void Write(TextHandler textHandler, int? folderId) //mutat din DBSingleton, pot aparea probleme cu Conn
+        public static void Write(TextHandler textHandler, int? folderId)
         {
             try
             {
@@ -80,7 +75,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                     OracleCommand cmd = new OracleCommand();
                     cmd.Connection = Conn;
                     textHandler.writeToDB(cmd, folderId);
-                    //Conn.Close();
                 }
             }
             catch (Exception e)
@@ -89,14 +83,11 @@ namespace DocumentRepositoryOnline.DocumentRepository
             }
         }
 
-        //Cauta directoare cu sau fara subfoldere
         public FilesTraverse(String path, int option) // 1 - files in folder, files in subfolders, 0 - only files in current folder
         {
             DirectoryInfo directory = new DirectoryInfo(path);
             string extensionList = DBSingleton.getFiletypes();
 
-
-            //Toate fisierele din directorul dat
             int folderId = DBSingleton.writeFolder(path, null, 1);
             foreach (var file in directory.GetFiles())
             {
@@ -108,7 +99,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
 
             if (option == 1)
             {
-                //Toate fisierele din toate subdirectoarele
                 foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
                 {
                     folderId = DBSingleton.writeFolder(dir.Name, 1, 1);
@@ -124,15 +114,13 @@ namespace DocumentRepositoryOnline.DocumentRepository
             DBSingleton.CloseConnection();
         }
 
-        //Pentru insert de fisiere
-        public FilesTraverse(String[] list) // lista de fisiere alese
+        public FilesTraverse(String[] list)
         {
             string extensionList = DBSingleton.getFiletypes();
             FileInfo fi = new FileInfo(list[0]);
             String fullPath = fi.FullName;
             String path = "";
 
-            //Path va fi calea catre documentul curent; pentru fullPath = "E:\\A3S2\\Licenta\\test\\This is a test2.docx"    path = E:\A3S2\Licenta\test
             for (int i = fullPath.Length - 1; i > 0; i--)
             {
                 if (fullPath[i] == '\\')
@@ -141,8 +129,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
                     break;
                 }
             }
-            int folderId = DBSingleton.writeFolder(path, null, 0); // (path, parentId = null deoarece este folder root pentru cautare, fullscan = 0)
-
+            int folderId = DBSingleton.writeFolder(path, null, 0);
 
             foreach (String file in list)
             {

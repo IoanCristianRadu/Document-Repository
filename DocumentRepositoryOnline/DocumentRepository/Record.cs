@@ -26,7 +26,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
         private String relevantContent;
         public bool isCorrectPath;
 
-
         public string Continut
         {
             get
@@ -210,7 +209,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
             this.Local_path = local_path;
             this.isCorrectPath = true;
         }
-
 
         public Record(string last_modified, string date_created, int filesize, string extension, string author, string title, int pages)
         {

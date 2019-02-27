@@ -22,9 +22,6 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 
         public override void extractContent()
         {
-            //StringBuilder text = new StringBuilder();
-            //String twoPages = "";
-
             if (String.Compare(this.path , "") != 0)
             {
                 PdfReader pdfReader = new PdfReader(this.path);
@@ -36,21 +33,7 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 
                     currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
                     content.Add(currentText);
-                    //text.Append(currentText);
-                    //twoPages = twoPages + currentText;
-                    /*
-                    if (page % 2 == 0)
-                    {
-                        content.Add(twoPages);
-                        twoPages = "";
-                    }*/
                 }
-                /*
-                if(pdfReader.NumberOfPages % 2 != 0)
-                {
-                    content.Add(twoPages);
-                    twoPages = "";
-                }*/
                 pdfReader.Close();
             }
         }

@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
-//using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Xml.Linq;
 using System.Data;
@@ -15,7 +14,6 @@ using Excel;
 
 namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
-
     public class OfficeHandler : TextHandler
     {
         public WordprocessingDocument wordDoc;
@@ -109,88 +107,13 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                     }
                     content.Add(worksheetPage);
                 }
-
-
-
-                /*
-                //2. Reading from a OpenXml Excel file (2007 format; *.xlsx)
-                FileStream fs = new FileStream(path, FileMode.Open);
-                IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(fs);
-
-                DataSet ds = excelReader.AsDataSet();
-                //ds.Tables
-
-                //5. Data Reader methods
-                while (excelReader.Read())
-                {
-                    excelReader.GetInt32(0);
-                }
-
-                //6. Free resources (IExcelDataReader is IDisposable)
-                excelReader.Close();*/
             }
             else if (this.extension == ".docx")
             {
                 wordDoc = WordprocessingDocument.Open(path, false);
                 String s = wordDoc.MainDocumentPart.Document.InnerText;
                 content.Add(s);
-                /*
-                    using (WordprocessingDocument doc =
-                        WordprocessingDocument.Open(memoryStream, false))
-                    {
-                        RevisionAccepter.AcceptRevisions(doc);
-                        XElement root = doc.MainDocumentPart.GetXDocument().Root;
-                        XElement body = root.LogicalChildrenContent().First();
-                        foreach (XElement blockLevelContentElement in body.LogicalChildrenContent())
-                        {
-                            if (blockLevelContentElement.Name == W.p)
-                            {
-                                var text = blockLevelContentElement
-                                    .LogicalChildrenContent()
-                                    .Where(e => e.Name == W.r)
-                                    .LogicalChildrenContent()
-                                    .Where(e => e.Name == W.t)
-                                    .Select(t => (string)t)
-                                    .StringConcatenate();
-                                Console.WriteLine("Paragraph text >{0}<", text);
-                                continue;
-                            }
-                            // If element is not a paragraph, it must be a table.
-                            Console.WriteLine("Table");
-                        }
-                    }
-                }*/
-
-                //String o = GetSubstringByString("<w:t>", "</w:t>", s);
-
-
-                /*
-                foreach (OpenXmlElement oneElem in wordDoc.MainDocumentPart.Document.Body.ChildElements)
-                {
-                    oneElem.in
-
-                }
-                Body body = wordDoc.MainDocumentPart.Document.Body.ChildElements[0];
-
-                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-                {
-                    Xml
-                        docText = sr.ReadToEnd();
-
-                }
-                
-                while (body.HasChildren)
-                {
-                    Paragraph para = body.ChildElements.
-                }
-                */
-
-
-
             }
         }
-
     }
-
-
 }

@@ -67,8 +67,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 }
                 dr.Close();
 
-
-
                 Conn.Close();
                 return pathList;
             }
@@ -90,14 +88,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 {
                     cmd = new OracleCommand();
                     parentId = getCurrentSeqValue("folders_id.currval");
-                    /*
-                    cmd.Connection = conn;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "Select folders_id.currval FROM dual ";
-                    OracleDataReader dr = cmd.ExecuteReader();
-                    dr.Read();
-                    dr.Close();         
-                    */
                 }
 
                 cmd = new OracleCommand();
@@ -115,7 +105,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 {
                     lastNullFolder = primaryKey;
                 }
-                //Conn.Close();
                 return primaryKey;
             }
             catch (Exception e)
@@ -161,7 +150,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 OracleDataReader dr = cmd.ExecuteReader();
                 dr.Read();
                 String filetypes = dr.GetString(0);
-                //Conn.Close();
                 return filetypes;
             }
             catch (Exception e)
@@ -267,24 +255,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
         }
 
         public static List<Record> SearchContent(String content, int pagesMin, int pagesMax, String lastModifiedMin, String lastModifiedMax, String creationDateMin, String creationDateMax, int fileSizeMin, int fileSizeMax, String extension, String title)
-        {/*
-            if (pagesMin == 0)
-            {
-                pagesMin = null;
-            }
-            if (pagesMax == 0)
-            {
-                pagesMax = null;
-            }
-            if (fileSizeMax == 0)
-            {
-                fileSizeMax = null;
-            }
-            if (fileSizeMin == 0)
-            {
-                fileSizeMin = null;
-            }
-            */
+        {
             List<Record> instance = new List<Record>();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = Conn;
@@ -293,25 +264,15 @@ namespace DocumentRepositoryOnline.DocumentRepository
             if (content == "") //Query normal 
             {
                 command = "SELECT fd.last_modified, fd.date_created, fd.filesize, fd.extension, fd.author, fd.title, fd.pages,f.id FROM file_details fd , folders f WHERE fd.folder_id = f.id ";
-
                 command = command + createCommand(content, pagesMin, pagesMax, lastModifiedMin, lastModifiedMax, creationDateMin, creationDateMax, fileSizeMin, fileSizeMax, extension, title);
-
                 cmd.CommandText = command;
-                /*"SELECT last_modified,date_created,filesize,extension,author,title,pages FROM file_details fd WHERE " +
-                     //" TO_DATE(fd.last_modified , 'mm/dd/yyyy HH:MI:SS AM') between TO_DATE('" + lastModifiedMin + "', 'dd/mm/yyyy') AND TO_DATE('" + lastModifiedMax + "', 'dd/mm/yyyy')" +
-                     " fd.last_modified between TO_DATE('" + lastModifiedMin + "', 'dd/mm/yyyy') AND TO_DATE('" + lastModifiedMax + "', 'dd/mm/yyyy')" +
-                     " and fd.date_created between TO_DATE('" + creationDateMin + "', 'dd/mm/yyyy') AND TO_DATE('" + creationDateMax + "', 'dd/mm/yyyy')" +
-                     " and fd.filesize BETWEEN " + fileSizeMin + " AND " + fileSizeMax +
-                     " and fd.extension LIKE('%." + extension + "%')" +
-                     " and fd.title LIKE('%" + title + "%')" +
-                     " and fd.pages BETWEEN " + pagesMin + " AND " + pagesMax;*/
+
                 OracleDataReader dr = cmd.ExecuteReader();
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
                     Record r = new Record(dr.GetString(0), dr.GetString(1), dr.GetInt32(2), dr.GetOracleString(3).ToString(), dr.GetOracleString(4).ToString(), dr.GetOracleString(5).ToString(), dr.GetInt32(6));
                     int PathId = dr.GetInt32(7);
-
 
                     OracleCommand orclcmd = new OracleCommand();
                     orclcmd.Connection = Conn;
@@ -326,7 +287,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 }
                 return instance;
             }
-            else //Query relaxation pe content
+            else //Query relaxation
             {
                 command = "SELECT fd.last_modified,fd.date_created,fd.filesize,fd.extension,fd.author,fd.title,fd.pages,f.id, listagg(cd.id , ',') within group (ORDER BY score(1) DESC)" +
                          " FROM content_data cd, file_details fd, folders f WHERE cd.file_details_id = fd.id AND f.id = fd.folder_id ";
@@ -341,60 +302,25 @@ namespace DocumentRepositoryOnline.DocumentRepository
                                     "<seq><rewrite>transform((TOKENS, \"?{\", \"}\", \"OR\"))</rewrite></seq>" +
                                     "</progression></textquery><score datatype = \"INTEGER\" algorithm = \"COUNT\" /></query>'";
 
-                //command = command + " and cd.continut LIKE('%" + content + "%')";
-
-
                 string[] contents = content.Split('+', '-', '"');
-                if (contents.Length == 1) // Daca nu avem operatori, folosim query relaxation standard
+                if (contents.Length == 1) // No operators -> standard query relaxation
                 {
                     command = command + " and CONTAINS(cd.continut," + relax + " , 1) >0";
                     command = command + " GROUP BY fd.last_modified,fd.date_created,fd.filesize,fd.extension,fd.author,fd.title,fd.pages,f.id  ORDER BY SUM(SCORE(1)) DESC";
                 }
-                else // Daca avem mai mult de 1 operator, folosim query relaxation manual 
+                else // Manual query relaxation
                 {
                     command = addOperators(command, content, contents);
                 }
-
-
                 cmd.CommandText = command;
-                /*"SELECT cd.continut,cd.part_number,fd.last_modified,fd.date_created,fd.filesize,fd.extension,fd.author,fd.title,fd.pages,f.local_path" +
-                     " FROM content_data cd, file_details fd, folders f WHERE cd.file_details_id = fd.id AND f.id = fd.folder_id " +
-                     " and cd.continut LIKE('%" + content + "%')" +
-                     " and TO_DATE(fd.last_modified , 'mm/dd/yyyy HH:MI:SS AM') between TO_DATE('" + lastModifiedMin + "', 'dd/mm/yyyy') AND TO_DATE('" + lastModifiedMax + "', 'dd/mm/yyyy')" +
-                     " and TO_DATE(fd.date_created , 'mm/dd/yyyy HH:MI:SS AM') between TO_DATE('" + creationDateMin + "', 'dd/mm/yyyy') AND TO_DATE('" + creationDateMax + "', 'dd/mm/yyyy')" +
-                     " and fd.filesize BETWEEN " + fileSizeMin + " AND " + fileSizeMax +
-                     " and fd.extension LIKE('%." + extension + "%')" +
-                     " and fd.title LIKE('%" + title + "%')" +
-                     " and fd.pages BETWEEN " + pagesMin + " AND " + pagesMax;*/
                 OracleDataReader dataReader = cmd.ExecuteReader();
-
                 dataReader = cmd.ExecuteReader();
-                /*
-                if (dr.Read())
-                {
-                    Record r = new Record(dr.GetOracleDate(0).ToString(), dr.GetOracleDate(1).ToString(), dr.GetInt32(2), dr.GetOracleString(3).ToString(), dr.GetOracleString(4).ToString(), dr.GetOracleString(5).ToString(), dr.GetInt32(6));
-                    int PathId = dr.GetInt32(7);
 
-                    OracleCommand orclcmd = new OracleCommand();
-                    orclcmd.Connection = Conn;
-                    orclcmd.CommandType = CommandType.Text;
-                    orclcmd.CommandText = "SELECT listagg(local_path,'\') within group (order by level)" +
-                                          " FROM folders START WITH id " + PathId + " CONNECT BY prior id = parent_id; ";
-
-                    OracleDataReader odr = cmd.ExecuteReader();
-                    r.Local_path = odr.GetOracleString(0).ToString();
-
-                    String PageIds = dr.GetOracleString(8).ToString();
-                    string[] bestId = PageIds.Split(',');
-                    r.MostRelevantPage = Int32.Parse(bestId[0]);
-                    instance.Add(r);
-                }*/
                 while (dataReader.Read())
                 {
                     Record r = new Record(dataReader.GetString(0), dataReader.GetString(1), dataReader.GetInt32(2), dataReader.GetOracleString(3).ToString(), dataReader.GetOracleString(4).ToString(), dataReader.GetOracleString(5).ToString(), dataReader.GetInt32(6));
                     int PathId = dataReader.GetInt32(7);
                     String PageIds = dataReader.GetOracleString(8).ToString();
-
 
                     OracleCommand orclcmd = new OracleCommand();
                     orclcmd.Connection = Conn;
@@ -408,7 +334,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
 
                     string[] bestId = PageIds.Split(',');
                     r.MostRelevantPage = Int32.Parse(bestId[0]);
-
 
                     orclcmd.CommandText = "SELECT continut FROM content_data WHERE id = " + bestId[0];
                     odr = orclcmd.ExecuteReader();
@@ -425,13 +350,11 @@ namespace DocumentRepositoryOnline.DocumentRepository
                     List<int> relevantWordsLocation = new List<int>();
                     List<int> relevantWordsDensity = new List<int>();
 
-                    //Tine minte pozitia cuvintelor din cautare
                     while ((startIndex = relevantContent.IndexOf("<<", startIndex + 1)) > 0)
                     {
                         relevantWordsLocation.Add(startIndex);
                     }
 
-                    //Gaseste bucata din text cu cele mai multe cuvinte din cautare intr-un range de ~400 caractere
                     if (relevantWordsLocation.Count > 0)
                     {
                         foreach (int index in relevantWordsLocation)
@@ -494,8 +417,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
             }
         }
 
-        //Functie auxiliara folosita pentru search
-        //Adauga in "command" query relaxation manual pentru 2 sau mai multi operatori
         private static String addOperators(String command, String content, string[] contents)
         {
             String relax = "'<query>    <textquery grammar = \"CONTEXT\">         <progression> ";
@@ -505,7 +426,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
             List<String> seqListMinus = new List<string>();
 
             seqList.Add(content);
-
 
             contents = content.Split('"');
             if (contents.Length > 1)
@@ -555,8 +475,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 }
             }
 
-
-
             foreach (String s in seqList)
             {
                 if (s.Contains("-"))
@@ -595,7 +513,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
             cmd.ExecuteNonQuery();
         }
 
-        public static void Write(FileInfo file) //move me to FilesTraverse
+        public static void Write(FileInfo file)
         {
             TextHandler textHandler = null;
             if (file.Extension == ".txt" || file.Extension == ".html")
@@ -620,15 +538,11 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 int folder_id;
                 int file_details_id;
 
-                //Get current folder_id
                 folder_id = getCurrentSeqValue("folders_id.currval");
 
-
-                //Insert file details for file
                 cmd.CommandText = "Insert into file_details VALUES (default,'" + textHandler.last_modified + "','" + textHandler.date_created + "'," + textHandler.fileSize + ",'" + textHandler.extension + "','" + textHandler.author + "','" + textHandler.title + "'," + textHandler.pages + "," + folder_id + ")";
                 int rowsUpdated = cmd.ExecuteNonQuery();
 
-                //get current file_details_id
                 file_details_id = getCurrentSeqValue("file_details_id.currval");
 
                 int i = 1;
@@ -639,7 +553,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                     cmd.ExecuteNonQuery();
                     i++;
                 }
-                //Conn.Close();
             }
             catch (Exception e)
             {
@@ -672,15 +585,11 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 int folder_id;
                 int file_details_id;
 
-                //Get current folder_id
                 folder_id = getCurrentSeqValue("folders_id.currval");
 
-
-                //Insert file details for file
                 cmd.CommandText = "Insert into file_details VALUES (default,'" + textHandler.last_modified + "','" + textHandler.date_created + "'," + textHandler.fileSize + ",'" + textHandler.extension + "','" + textHandler.author + "','" + textHandler.title + "'," + textHandler.pages + "," + folder_id + ",'" + accountEmail + "')";
                 int rowsUpdated = cmd.ExecuteNonQuery();
 
-                //get current file_details_id
                 file_details_id = getCurrentSeqValue("file_details_id.currval");
 
                 int i = 1;
@@ -691,7 +600,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                     cmd.ExecuteNonQuery();
                     i++;
                 }
-                //Conn.Close();
             }
             catch (Exception e)
             {
@@ -723,11 +631,9 @@ namespace DocumentRepositoryOnline.DocumentRepository
 
                 int fileDetailsId;
 
-                //Insert file details for file
                 cmd.CommandText = "Insert into file_details VALUES (default,'" + textHandler.last_modified + "','" + textHandler.date_created + "'," + textHandler.fileSize + ",'" + textHandler.extension + "','" + textHandler.author + "','" + textHandler.title + "'," + textHandler.pages + "," + folderId + ",'" + accountEmail + "')";
                 int rowsUpdated = cmd.ExecuteNonQuery();
 
-                //get current file_details_id
                 cmd.CommandText = "Select ID FROM file_details WHERE title ='" + file.Name + "' AND folder_id =" + folderId;
                 cmd.CommandType = CommandType.Text;
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -742,7 +648,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                     cmd.ExecuteNonQuery();
                     i++;
                 }
-                //Conn.Close();
             }
             catch (Exception e)
             {
@@ -792,8 +697,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
             return folder_id;
         }
 
-        //Web begins
-
         public static int register(String email, String password, String dateCreated, String type)
         {
             OracleCommand cmd = new OracleCommand();
@@ -839,7 +742,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
 
         public static int editAccount(String currentEmail, String newEmail, String password, String firstName, String lastName, String location)
         {
-            if (password != null) // Update cu parola
+            if (password != null)
             {
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = Conn;
@@ -892,7 +795,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 }
                 return totalRowsUpdated;
             }
-            else // Update fara parola
+            else
             {
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = Conn;
@@ -1027,7 +930,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 folder.Fullscan = dr.GetInt32(3);
                 folderList.Add(folder);
             }
-
             return folderList;
         }
 
@@ -1078,7 +980,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
             {
                 return 0;
             }
-
         }
 
         public static int deleteFolder(String folderPath)
@@ -1191,7 +1092,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 return -1;
             }
         }
-
         public static Groups getGroupData(String accountEmail)
         {
             try
@@ -1220,7 +1120,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 return new Groups();
             }
         }
-
         public static GroupMembers getGroupMembers(int groupId)
         {
             try
@@ -1266,125 +1165,6 @@ namespace DocumentRepositoryOnline.DocumentRepository
             {
                 return false;
             }
-
         }
-
-        /*
-        public void WriteOfficeFile(OfficeHandler oh)
-        {
-
-            OracleCommand cmd = new OracleCommand();
-            cmd.Connection = conn;
-
-            int folder_id;
-            int file_details_id;
-
-            //Get current folder_id
-            folder_id = getFolderId();
-
-            //Get text content
-            oh.extractContent();
-
-            //Insert file details for file
-            cmd.CommandText = "Insert into file_details VALUES (default,'" + oh.last_modified + "','" + oh.date_created + "'," + oh.fileSize + ",'" + oh.extension + "','" + oh.author + "','" + oh.title + "'," + oh.pages + "," + folder_id + ")";
-            int rowsUpdated = cmd.ExecuteNonQuery();
-
-            //get current file_details_id
-            file_details_id = getFileDetailsId();
-
-            int i = 1;
-            foreach (String s in oh.content)
-            {
-
-                cmd.CommandText = "Insert into content_data values(default,'" + s + "'," + i + "," + folder_id + "," + file_details_id + ")";
-                cmd.ExecuteNonQuery();
-                i++;
-            }
-            conn.Close();
-        }
-
-        public void writePdfFile(PdfHandler ph)
-        {
-            ph.extractContent();
-
-            try
-            {
-
-                OracleCommand cmd = new OracleCommand();
-                cmd.Connection = conn;
-
-                int folder_id;
-                int file_details_id;
-
-                //Get current folder_id
-                folder_id = getFolderId();
-
-
-                //Insert file details for file
-                cmd.CommandText = "Insert into file_details VALUES (default,'" + ph.last_modified + "','" + ph.date_created + "'," + ph.fileSize + ",'" + ph.extension + "','" + ph.author + "','" + ph.title + "'," + ph.pages + "," + folder_id + ")";
-                int rowsUpdated = cmd.ExecuteNonQuery();
-
-                //get current file_details_id
-                file_details_id = getFileDetailsId();
-
-                int i = 1;
-                foreach (String s in ph.content)
-                {
-
-                    cmd.CommandText = "Insert into content_data values(default,'" + s + "'," + i + "," + folder_id + "," + file_details_id + ")";
-                    cmd.ExecuteNonQuery();
-                    i++;
-                }
-                conn.Close();
-            }
-            catch(Exception e)
-            {
-
-            }
-
-        }
-
-        public void writeTextFile(TextHandler th)
-        {
-            try
-            {
-
-                OracleCommand cmd = new OracleCommand();
-                cmd.Connection = conn;
-
-                //Get current folder_id
-                int folder_id = getFolderId();
-
-                //Insert file details for file
-                cmd.CommandText = "Insert into file_details VALUES (default,'" + th.last_modified + "','" + th.date_created + "'," + th.fileSize + ",'" + th.extension + "','" + th.author + "','" + th.title + "'," + th.pages + "," + folder_id + ")";
-                int rowsUpdated = cmd.ExecuteNonQuery();
-
-                //Get text content
-                th.extractContent();
-
-
-                //get current file_details_id
-                int file_details_id = getFileDetailsId();
-
-
-                //Insert file
-                foreach(string s in th.content)
-                {
-                    cmd.CommandText = "Insert into content_data values(default,'" + s + "',0," + folder_id + "," + file_details_id + ")";
-                    cmd.ExecuteNonQuery();
-                }
-
-
-
-
-
-                conn.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-        */
     }
 }

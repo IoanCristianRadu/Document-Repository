@@ -11,9 +11,6 @@ namespace DocumentRepositoryOnline.Controllers
 {
     public class StorageController : Controller
     {
-        //String repositoryPath = "E:\\A3S2\\Licenta\\DocumentRepositoryOnline\\DocumentRepositoryOnline\\DocumentRepository\\UploadedFiles\\";
-
-        // GET: Storage
         public ActionResult Index()
         {
             return View();
@@ -30,11 +27,10 @@ namespace DocumentRepositoryOnline.Controllers
                 if (Session["FolderPath"] == null || Session["FolderPath"].ToString() == path)
                 {
                     Session["FolderPath"] = path;
-                    //Read files from DB
+
                     foldersAndFiles.fileList = DocumentRepository.DBSingleton.readFileDetailsByEmail(Session["Email"].ToString());
                     foldersAndFiles.fileList.FileDetailsList.Sort();
 
-                    //Read folders from DB
                     int folderId = DocumentRepository.DBSingleton.getFolderId(path);
                     subfolderList = DocumentRepository.DBSingleton.getSubfolders(folderId);
                     Folders folders = new Folders();
@@ -45,18 +41,13 @@ namespace DocumentRepositoryOnline.Controllers
                 }
                 else
                 {
-                    //Read folders from DB
                     int folderId = DocumentRepository.DBSingleton.getFolderId(Session["FolderPath"].ToString());
                     subfolderList = DocumentRepository.DBSingleton.getSubfolders(folderId);
                     Folders folders = new Folders();
                     folders.folderList = subfolderList;
 
-
-                    //Read files from DB
                     foldersAndFiles.fileList = DocumentRepository.DBSingleton.readFileDetailsByFolderId(folderId);
                     foldersAndFiles.fileList.FileDetailsList.Sort();
-
-
 
                     foldersAndFiles.folderList = folders;
                     return View(foldersAndFiles);
@@ -81,8 +72,6 @@ namespace DocumentRepositoryOnline.Controllers
             }
         }
 
-        //Uploadeaza un fisier
-        //Da eroare daca visual studio nu este RUN AS ADMINISTRATOR deoarece nu are permisiuni de write pe un folder nou
         [HttpPost]
         public ActionResult Personal(List<HttpPostedFileBase> files)
         {
@@ -107,8 +96,6 @@ namespace DocumentRepositoryOnline.Controllers
 
                             int folderId = DocumentRepository.DBSingleton.getFolderId(path);
 
-
-                            //Daca fisierul introdus are acelasi nume cu un altul din baza de date, stergem fisierul cu date created mai vechi
                             FileDetailsVector fileDetailsVector = new FileDetailsVector();
                             fileDetailsVector = DocumentRepository.DBSingleton.readFileDetailsByFolderId(folderId);
 
@@ -135,7 +122,7 @@ namespace DocumentRepositoryOnline.Controllers
                     }
                     return RedirectToAction("Personal");
                 }
-                else //Pentru subfoldere
+                else
                 {
                     foreach (HttpPostedFileBase file in files)
                     {
@@ -149,8 +136,6 @@ namespace DocumentRepositoryOnline.Controllers
                             FileInfo fileInfo = new FileInfo(_path);
                             int folderId = DocumentRepository.DBSingleton.getFolderId(path);
                             DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
-
-                            //Daca fisierul introdus are acelasi nume cu un altul din baza de date, stergem fisierul cu date created mai vechi
                         }
                     }
                 }
@@ -298,8 +283,6 @@ namespace DocumentRepositoryOnline.Controllers
                 }
                 else
                 {
-                    //folderPath == Session["PathToMove"] == path-ul vechi al folderului
-                    //Session["FolderPath"].ToString() + "\\" + folderName == noul path in care este mutat
                     String folderPath = Session["PathToMove"].ToString();
 
                     DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
@@ -308,16 +291,11 @@ namespace DocumentRepositoryOnline.Controllers
                     String folderName = splitter[splitter.Length - 1];
                     directoryInfo.MoveTo(Session["FolderPath"].ToString() + "\\" + folderName);
 
-                    //Stergem folderul din DB
                     DocumentRepository.DBSingleton.deleteFolder(folderPath);
 
-                    //Scriem noua locatie in baza de date
                     WriteWholeFolderToDB(Session["FolderPath"].ToString() + "\\" + folderName);
 
                     DeleteFolder(folderPath);
-
-                    //TODO: introduce folder contents in database
-
                 }
                 return RedirectToAction("Personal");
             }
@@ -331,11 +309,8 @@ namespace DocumentRepositoryOnline.Controllers
         {
             DirectoryInfo directory = new DirectoryInfo(folderPath);
 
-            //Creeam directorul in baza de date
             int parentFolderId = DocumentRepository.DBSingleton.getFolderId(Session["FolderPath"].ToString());
             DocumentRepository.DBSingleton.writeFolderWeb(folderPath, parentFolderId, 1);
-
-            //Toate fisierele din directorul dat
 
             int currentFolderId = DocumentRepository.DBSingleton.getFolderId(folderPath);
             foreach (FileInfo fileInfo in directory.GetFiles())
@@ -343,7 +318,6 @@ namespace DocumentRepositoryOnline.Controllers
                 DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), currentFolderId);
             }
 
-            //Toate fisierele din toate subdirectoarele
             foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
             {
                 String parentFolderPath = dir.Parent.FullName;
@@ -366,7 +340,6 @@ namespace DocumentRepositoryOnline.Controllers
 
         // -------------------------------------------> Groups <-------------------------------------------
 
-        //ONCLICK Open Group
         public ActionResult GoToGroup(String groupName)
         {
             Session["GroupName"] = groupName;
@@ -378,7 +351,6 @@ namespace DocumentRepositoryOnline.Controllers
         {
             try
             {
-                //Implementare logica afisarea content-ului grupului + nume email ce a adaugat chestia
                 List<Folder> subfolderList = new List<Folder>();
                 FoldersAndFiles foldersAndFiles = new FoldersAndFiles();
                 String pathGroup = Path.Combine(Server.MapPath("~/DocumentRepository/Groups"), Session["GroupName"].ToString());
@@ -387,12 +359,11 @@ namespace DocumentRepositoryOnline.Controllers
                 if (Session["GroupPath"] == null || Session["GroupPath"].ToString() == pathGroup)
                 {
                     Session["GroupPath"] = pathGroup;
-                    //Read files from DB
+
                     int folderId = DocumentRepository.DBSingleton.getFolderId(pathGroup);
                     foldersAndFiles.fileList = DocumentRepository.DBSingleton.readFileDetailsByFolderId(folderId);
                     foldersAndFiles.fileList.FileDetailsList.Sort();
 
-                    //Read folders from DB
                     subfolderList = DocumentRepository.DBSingleton.getSubfolders(folderId);
                     Folders folders = new Folders();
                     folders.folderList = subfolderList;
@@ -402,14 +373,11 @@ namespace DocumentRepositoryOnline.Controllers
                 }
                 else
                 {
-                    //Read folders from DB
                     int folderId = DocumentRepository.DBSingleton.getFolderId(Session["GroupPath"].ToString());
                     subfolderList = DocumentRepository.DBSingleton.getSubfolders(folderId);
                     Folders folders = new Folders();
                     folders.folderList = subfolderList;
 
-
-                    //Read files from DB
                     foldersAndFiles.fileList = DocumentRepository.DBSingleton.readFileDetailsByFolderId(folderId);
                     foldersAndFiles.fileList.FileDetailsList.Sort();
 
@@ -447,7 +415,6 @@ namespace DocumentRepositoryOnline.Controllers
                             int folderId = DocumentRepository.DBSingleton.getFolderId(path);
                             DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
 
-                            //TODO Daca fisierul introdus are acelasi nume cu un altul din baza de date, stergem fisierul cu date created mai vechi
                             ViewBag.Message = "File Uploaded Successfully!!";
                         }
                         else
@@ -458,7 +425,7 @@ namespace DocumentRepositoryOnline.Controllers
                     }
                     return RedirectToAction("GroupContent");
                 }
-                else //Pentru subfoldere
+                else 
                 {
                     foreach (HttpPostedFileBase file in files)
                     {
@@ -472,8 +439,6 @@ namespace DocumentRepositoryOnline.Controllers
                             FileInfo fileInfo = new FileInfo(_path);
                             int folderId = DocumentRepository.DBSingleton.getFolderId(path);
                             DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
-
-                            //Daca fisierul introdus are acelasi nume cu un altul din baza de date, stergem fisierul cu date created mai vechi
                         }
                     }
                 }
@@ -620,8 +585,6 @@ namespace DocumentRepositoryOnline.Controllers
             }
             else
             {
-                //folderPath == Session["GroupPathToMove"] == path-ul vechi al folderului
-                //Session["FolderPath"].ToString() + "\\" + folderName == noul path in care este mutat
                 String folderPath = Session["GroupPathToMove"].ToString();
 
                 DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
@@ -630,16 +593,11 @@ namespace DocumentRepositoryOnline.Controllers
                 String folderName = splitter[splitter.Length - 1];
                 directoryInfo.MoveTo(Session["GroupPath"].ToString() + "\\" + folderName);
 
-                //Stergem folderul din DB
                 DocumentRepository.DBSingleton.deleteFolder(folderPath);
 
-                //Scriem noua locatie in baza de date
                 GroupWriteWholeFolderToDB(Session["GroupPath"].ToString() + "\\" + folderName);
 
                 DeleteFolder(folderPath);
-
-                //TODO: introduce folder contents in database
-
             }
             return RedirectToAction("GroupContent");
         }
@@ -648,19 +606,14 @@ namespace DocumentRepositoryOnline.Controllers
         {
             DirectoryInfo directory = new DirectoryInfo(folderPath);
 
-            //Creeam directorul in baza de date
             int parentFolderId = DocumentRepository.DBSingleton.getFolderId(Session["GroupPath"].ToString());
             DocumentRepository.DBSingleton.writeFolderWeb(folderPath, parentFolderId, 1);
-
-            //Toate fisierele din directorul dat
 
             int currentFolderId = DocumentRepository.DBSingleton.getFolderId(folderPath);
             foreach (FileInfo fileInfo in directory.GetFiles())
             {
                 DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), currentFolderId);
             }
-
-            //Toate fisierele din toate subdirectoarele
             foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
             {
                 String parentFolderPath = dir.Parent.FullName;
@@ -685,7 +638,6 @@ namespace DocumentRepositoryOnline.Controllers
         {
             String rootPath = Session["RootPath"].ToString();
 
-            //get Group id
             string[] splitter = rootPath.Split('\\');
             String groupName = splitter[splitter.Length - 1];
             int groupId = DocumentRepository.DBSingleton.getGroupId(groupName);
@@ -707,7 +659,6 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 GroupMembers groupMembers = new GroupMembers();
 
-                //get Group id
                 String rootPath = Session["RootPath"].ToString();
                 string[] splitter = rootPath.Split('\\');
                 String groupName = splitter[splitter.Length - 1];
@@ -785,7 +736,6 @@ namespace DocumentRepositoryOnline.Controllers
         {
             String rootPath = Session["RootPath"].ToString();
 
-            //get Group id
             string[] splitter = rootPath.Split('\\');
             String groupName = splitter[splitter.Length - 1];
             int groupId = DocumentRepository.DBSingleton.getGroupId(groupName);

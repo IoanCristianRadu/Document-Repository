@@ -36,13 +36,10 @@ namespace DocumentRepositoryOnline.Controllers
         {
             if (account.Password == account.RetypePassword)
             {
-                //Verifica daca exista deja contul
                 bool accountExists = DocumentRepository.DBSingleton.verifyAccountIsUnique(account.Email);
                 if (!accountExists)
                 {
-                    //Creeaza contul
                     DocumentRepository.DBSingleton.register(account.Email, account.Password, DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" + DateTime.Now.Year.ToString(), "standard");
-                    //Returneaza pagina contului
                     Session["Email"] = account.Email;
                     return RedirectToAction("/Details");
                 }
@@ -68,14 +65,11 @@ namespace DocumentRepositoryOnline.Controllers
         [HttpPost]
         public ActionResult Login(Account account)
         {
-            //Verifica daca exista deja contul
             bool accountExists = DocumentRepository.DBSingleton.verifyAccountIsUnique(account.Email);
             if (accountExists)
             {
-                //Verify account password
                 if (DocumentRepository.DBSingleton.verifyAccountPassword(account.Email, account.Password) == 1)
                 {
-                    //Returneaza pagina contului
                     Session["Email"] = account.Email;
                     return Redirect("/Storage/Personal");
                 }
@@ -153,7 +147,7 @@ namespace DocumentRepositoryOnline.Controllers
                     account.Password = "null";
                 }
                 int rowsUpdated = DocumentRepository.DBSingleton.editAccount(Session["Email"].ToString(), account.Email, account.Password, account.FirstName, account.LastName, account.Location);
-                if (rowsUpdated >= 1) //Daca contul a fost modificat cu succes
+                if (rowsUpdated >= 1)
                 {
                     Session["Email"] = account.Email;
                     return RedirectToAction("Details");
@@ -170,7 +164,6 @@ namespace DocumentRepositoryOnline.Controllers
         {
             try
             {
-                //Read all groups the user is a member of from database
                 Groups groups = new Groups();
                 groups = DocumentRepository.DBSingleton.getGroupData(Session["Email"].ToString());
 
@@ -199,8 +192,6 @@ namespace DocumentRepositoryOnline.Controllers
         [HttpPost]
         public ActionResult CreateGroup(Groups group)
         {
-            //TODO verify if group name is unique
-
             if (DocumentRepository.DBSingleton.verifyGroupNameUnique(group.groupName))
             {
                 DocumentRepository.DBSingleton.createGroup(group.groupName);
@@ -221,7 +212,6 @@ namespace DocumentRepositoryOnline.Controllers
             return RedirectToAction("Groups");
         }
 
-        //Nu cred ca face nimic
         public ActionResult CreateGroupPage()
         {
             Group group = new Group();

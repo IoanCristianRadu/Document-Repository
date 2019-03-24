@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Oracle.ManagedDataAccess.Client;
 using UnidecodeSharpFork;
 
-namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
+namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers.DbFileWriters
 {
     public class DbFileWriter : IDbFileWriter
     {

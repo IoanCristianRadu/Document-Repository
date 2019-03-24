@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentRepositoryOnline.DocumentRepository.FileHandlers.DbFileWriters;
 using Oracle.ManagedDataAccess.Client;
 
 namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
@@ -11,6 +12,6 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
     {
         void ExtractContent();
         void WriteToDb(IDbFileWriter dbFileWriter);
-        FileDetails getFileDetails();
+        FileDetails GetFileDetails();
     }
 }

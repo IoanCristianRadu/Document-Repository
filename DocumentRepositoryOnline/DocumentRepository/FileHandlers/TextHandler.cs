@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using DocumentRepositoryOnline.DocumentRepository.FileHandlers.DbFileWriters;
 
 namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
@@ -50,7 +51,7 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
             dbFileWriter.WriteToDb(FileData);
         }
 
-        public FileDetails getFileDetails()
+        public FileDetails GetFileDetails()
         {
             return FileData;
         }

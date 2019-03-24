@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using Oracle.ManagedDataAccess.Client;
 using DocumentRepositoryOnline.DocumentRepository.FileHandlers;
+using DocumentRepositoryOnline.DocumentRepository.FileHandlers.DbFileWriters;
 
 namespace DocumentRepositoryOnline.DocumentRepository
 {

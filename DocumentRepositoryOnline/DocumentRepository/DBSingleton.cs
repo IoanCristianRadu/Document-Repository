@@ -576,7 +576,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
 
             if (textHandler != null)
             {
-                FileDetails fileDetails = textHandler.getFileDetails();
+                FileDetails fileDetails = textHandler.GetFileDetails();
                 OracleCommand cmd = new OracleCommand {Connection = Conn};
                 try
                 {
@@ -630,7 +630,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
             {
                 if (fileHandler == null) return;
                 fileHandler.ExtractContent();
-                FileDetails fileDetails = fileHandler.getFileDetails();
+                FileDetails fileDetails = fileHandler.GetFileDetails();
 
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = Conn;
@@ -683,7 +683,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 if (fileHandler != null)
                 {
                     fileHandler.ExtractContent();
-                    FileDetails fileDetails = fileHandler.getFileDetails();
+                    FileDetails fileDetails = fileHandler.GetFileDetails();
 
                     OracleCommand cmd = new OracleCommand();
                     cmd.Connection = Conn;

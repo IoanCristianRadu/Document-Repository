@@ -3,6 +3,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.IO;
 using System.Text;
+using DocumentRepositoryOnline.DocumentRepository.FileHandlers.DbFileWriters;
 
 namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
@@ -56,7 +57,7 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
             dbFileWriter.WriteToDb(FileData);
         }
 
-        public FileDetails getFileDetails()
+        public FileDetails GetFileDetails()
         {
             return FileData;
         }

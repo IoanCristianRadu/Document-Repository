@@ -28,11 +28,11 @@
 @using (Html.BeginForm("GroupAddMember", "Storage", FormMethod.Post, new {@class = "myForm"}))
 {
     <div>
-        <h2>Add member</h2>
+        <h2>getFoldersAndFiledd member</h2>
         @Html.EditorFor(model => model.AddEmail, new {htmlAttributes = new {@class = "form-control text-box single-line", @placeHolder = "Email:"}})
         @Html.ValidationMessageFor(model => model.AddEmail, "", new {@class = "text-danger"})
 
-        <input type="submit" value="Add member" class="btn btn-warning mySmallMargin"/>
+        <input type="submit" value="getFoldersAndFiledd member" class="btn btn-warning mySmallMargin"/>
     </div>
 }
 @using (Html.BeginForm("ViewMemberList", "Storage"))
@@ -94,9 +94,9 @@
                         <th>Name</th>
                         <th>Type</th>
                         <th>Pages</th>
-                        <th>Date Added</th>
+                        <th>Date getFoldersAndFiledded</th>
                         <th>File Size</th>
-                        <th>Added by</th>
+                        <th>getFoldersAndFiledded by</th>
                     </tr>
                     </thead>
                     <tbody>

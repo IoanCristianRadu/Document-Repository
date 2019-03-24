@@ -6,25 +6,24 @@
 }
 
 <div>
-    @using (Html.BeginForm("Personal", "Storage", FormMethod.Post, new { enctype = "multipart/form-data", @class = "myForm" }))
+    @using (Html.BeginForm("Personal", "Storage", FormMethod.Post, new {enctype = "multipart/form-data", @class = "myForm"}))
     {
-
         <div>
             <h2>Insert files</h2>
-            @Html.TextBox("files", "", new { @type = "file", @class = "myInsertFiles", multiple = "multiple" }) <br />
+            @Html.TextBox("files", "", new {@type = "file", @class = "myInsertFiles", multiple = "multiple"}) <br/>
 
-            <input type="submit" value="Upload" class="btn btn-warning" />
+            <input type="submit" value="Upload" class="btn btn-warning"/>
 
             @ViewBag.Message
         </div>
     }
 
-    @using (Html.BeginForm("CreateFolder", "Storage", FormMethod.Post, new { @class = "myForm" }))
+    @using (Html.BeginForm("CreateFolder", "Storage", FormMethod.Post, new {@class = "myForm"}))
     {
         <h2>Create folder</h2>
-        @Html.EditorFor(model => model.createFolderPath, new { htmlAttributes = new { @class = "form-control", @placeHolder = "Folder name:" } })
-        @Html.ValidationMessageFor(model => model.createFolderPath, "", new { @class = "text-danger" })
-        <input type="submit" value="Create folder" class="btn btn-warning myMarginTop" />
+        @Html.EditorFor(model => model.CreateFolderPath, new {htmlAttributes = new {@class = "form-control", @placeHolder = "Folder name:"}})
+        @Html.ValidationMessageFor(model => model.CreateFolderPath, "", new {@class = "text-danger"})
+        <input type="submit" value="Create folder" class="btn btn-warning myMarginTop"/>
     }
 </div>
 
@@ -52,7 +51,6 @@
                         }
                         <p class="myPath">Current path: @pathName</p>
                     }
-
                 }
                 @if (Session["Moving"] != null)
                 {
@@ -80,80 +78,80 @@
             <div class="bs-component">
                 <table class="table table-striped table-hover ">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Pages</th>
-                            <th>Date Added</th>
-                            <th>File Size</th>
-                        </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Pages</th>
+                        <th>Date Added</th>
+                        <th>File Size</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null)
+                    @if (Model != null)
+                    {
+                        Model.FolderList.FolderList.Sort();
+                        foreach (DocumentRepositoryOnline.Models.Folder folder in Model.FolderList.FolderList)
                         {
-                            Model.folderList.folderList.Sort();
-                            foreach (DocumentRepositoryOnline.Models.Folder folder in Model.folderList.folderList)
-                            {
-                                string[] folderPathSplit = folder.LocalPath.Split('\\');
-                                <tr>
-                                    <td>@folderPathSplit[folderPathSplit.Length - 1]</td>
-                                    <td>folder</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>
-                                        @using (Html.BeginForm("OpenFolder", "Storage", new { folderPath = @folder.LocalPath }))
-                                        {
-                                            <button class="btn btn-inverse" title="Log out" type="submit">Open folder</button>
-                                        }
-                                    </td>
-                                    <td>
-                                        @using (Html.BeginForm("MoveFolder", "Storage", new { folderPath = @folder.LocalPath }))
-                                        {
-                                            <button class="btn btn-inverse" title="Move" type="submit">Move</button>
-                                        }
-                                    </td>
-                                    <td>
-                                        @using (Html.BeginForm("DeleteFolder", "Storage", new { folderPath = @folder.LocalPath }))
-                                        {
-                                            <button class="btn btn-danger" title="Delete" type="submit">Delete</button>
-                                        }
-                                    </td>
-                                    @*<td><a href="@file.Path">Download</a></td>*@
-                                </tr>
-                            }
-                            foreach (DocumentRepositoryOnline.Models.FileDetails file in Model.fileList.FileDetailsList)
-                            {
-                                <tr>
-                                    <td>@((file.Title.Split('.'))[0])</td>
-                                    <td>@((file.Title.Split('.'))[1])</td>
-                                    <td>@file.Pages</td>
-                                    <td>@file.DateCreated</td>
-                                    <td>@file.FileSize kb</td>
-                                    <td>
-                                        @using (Html.BeginForm("Download", "Storage", new { Path = @file.Path + "\\" + @file.Title }))
-                                        {
-                                            <button class="btn btn-inverse" title="Log out" type="submit">Download</button>
-                                        }
-                                    </td>
-                                    <td>
-                                        @using (Html.BeginForm("MoveFile", "Storage", new { Path = @file.Path + "\\" + @file.Title }))
-                                        {
-                                            <button class="btn btn-inverse" title="Move" type="submit">Move</button>
-                                        }
-                                    </td>
-
-                                    <td>
-                                        @using (Html.BeginForm("DeleteFile", "Storage", new { filePath = @file.Path + "\\" + @file.Title }))
-                                        {
-                                            <button class="btn btn-danger" title="Delete" type="submit">Delete</button>
-                                        }
-                                    </td>
-
-                                    @*<td><a href="@file.Path">Download</a></td>*@
-                                </tr>
-                            }
+                            string[] folderPathSplit = folder.LocalPath.Split('\\');
+                            <tr>
+                                <td>@folderPathSplit[folderPathSplit.Length - 1]</td>
+                                <td>folder</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>
+                                    @using (Html.BeginForm("OpenFolder", "Storage", new {folderPath = @folder.LocalPath}))
+                                    {
+                                        <button class="btn btn-inverse" title="Log out" type="submit">Open folder</button>
+                                    }
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("MoveFolder", "Storage", new {folderPath = @folder.LocalPath}))
+                                    {
+                                        <button class="btn btn-inverse" title="Move" type="submit">Move</button>
+                                    }
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("DeleteFolder", "Storage", new {folderPath = @folder.LocalPath}))
+                                    {
+                                        <button class="btn btn-danger" title="Delete" type="submit">Delete</button>
+                                    }
+                                </td>
+                                @*<td><a href="@file.Path">Download</a></td>*@
+                            </tr>
                         }
+                        foreach (DocumentRepositoryOnline.Models.FileDetails file in Model.FileList.FileDetailsList)
+                        {
+                            <tr>
+                                <td>@((file.Title.Split('.'))[0])</td>
+                                <td>@((file.Title.Split('.'))[1])</td>
+                                <td>@file.Pages</td>
+                                <td>@file.DateCreated</td>
+                                <td>@file.FileSize kb</td>
+                                <td>
+                                    @using (Html.BeginForm("Download", "Storage", new {Path = @file.Path + "\\" + @file.Title}))
+                                    {
+                                        <button class="btn btn-inverse" title="Log out" type="submit">Download</button>
+                                    }
+                                </td>
+                                <td>
+                                    @using (Html.BeginForm("MoveFile", "Storage", new {Path = @file.Path + "\\" + @file.Title}))
+                                    {
+                                        <button class="btn btn-inverse" title="Move" type="submit">Move</button>
+                                    }
+                                </td>
+
+                                <td>
+                                    @using (Html.BeginForm("DeleteFile", "Storage", new {filePath = @file.Path + "\\" + @file.Title}))
+                                    {
+                                        <button class="btn btn-danger" title="Delete" type="submit">Delete</button>
+                                    }
+                                </td>
+
+                                @*<td><a href="@file.Path">Download</a></td>*@
+                            </tr>
+                        }
+                    }
 
                     </tbody>
                 </table>
@@ -189,6 +187,7 @@
         font-size: 20px;
         font-style: italic;
     }
+
     .myPath {
         font-size: 20px;
         font-style: italic;
@@ -197,7 +196,7 @@
     .myForm {
         background: #fff;
         border-radius: 10px;
-        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        box-shadow: 0 0 25px rgba(0, 0, 0, .04);
         margin: 20px 20px;
         padding: 30px;
         box-sizing: border-box;
@@ -206,9 +205,7 @@
         position: relative;
     }
 
-    .myMarginTop {
-        margin-top: 30px !important;
-    }
+    .myMarginTop { margin-top: 30px !important; }
 
     .myInsertFiles {
         padding: 15px 16px 13px;
@@ -249,7 +246,7 @@
     .rectangle {
         background: #fff;
         border-radius: 10px;
-        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        box-shadow: 0 0 25px rgba(0, 0, 0, .04);
         margin: 20px 20px;
         padding: 30px;
         box-sizing: border-box;
@@ -258,7 +255,7 @@
         width: 50%;
         padding: 10px;
         margin-top: 100px;
-        background: rgba(255,255,255,0.9);
+        background: rgba(255, 255, 255, 0.9);
         text-align: center;
     }
 </style>

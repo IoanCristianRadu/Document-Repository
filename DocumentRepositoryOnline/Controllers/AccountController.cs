@@ -28,7 +28,6 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 return Redirect("/Home/Index");
             }
-
         }
 
         [HttpPost]
@@ -36,14 +35,17 @@ namespace DocumentRepositoryOnline.Controllers
         {
             if (account.Password == account.RetypePassword)
             {
-                bool accountExists = DocumentRepository.DBSingleton.verifyAccountIsUnique(account.Email);
+                bool accountExists = DocumentRepository.DBSingleton.VerifyAccountIsUnique(account.Email);
                 if (!accountExists)
                 {
-                    DocumentRepository.DBSingleton.register(account.Email, account.Password, DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" + DateTime.Now.Year.ToString(), "standard");
+                    DocumentRepository.DBSingleton.Register(account.Email, account.Password,
+                        DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" +
+                        DateTime.Now.Year.ToString(), "standard");
                     Session["Email"] = account.Email;
                     return RedirectToAction("/Details");
                 }
             }
+
             return View();
         }
 
@@ -59,21 +61,21 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 return Redirect("/Home/Index");
             }
-
         }
 
         [HttpPost]
         public ActionResult Login(Account account)
         {
-            bool accountExists = DocumentRepository.DBSingleton.verifyAccountIsUnique(account.Email);
+            bool accountExists = DocumentRepository.DBSingleton.VerifyAccountIsUnique(account.Email);
             if (accountExists)
             {
-                if (DocumentRepository.DBSingleton.verifyAccountPassword(account.Email, account.Password) == 1)
+                if (DocumentRepository.DBSingleton.VerifyAccountPassword(account.Email, account.Password) == 1)
                 {
                     Session["Email"] = account.Email;
                     return Redirect("/Storage/Personal");
                 }
             }
+
             return RedirectToAction("Login");
         }
 
@@ -83,20 +85,22 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 if (Session["Email"] != null)
                 {
-                    Account account = new Account();
-                    account = DocumentRepository.DBSingleton.getAccountByEmail(Session["Email"].ToString());
+                    var account = DocumentRepository.DBSingleton.GetAccountByEmail(Session["Email"].ToString());
                     if (account.FirstName == "null")
                     {
                         account.FirstName = "-";
                     }
+
                     if (account.LastName == "null")
                     {
                         account.LastName = "-";
                     }
+
                     if (account.Location == "null")
                     {
                         account.Location = "-";
                     }
+
                     return View(account);
                 }
                 else
@@ -108,33 +112,34 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 return RedirectToAction("Login");
             }
-
         }
 
         public ActionResult Edit()
         {
             try
             {
-                Account account = DocumentRepository.DBSingleton.getAccountByEmail(Session["Email"].ToString());
+                Account account = DocumentRepository.DBSingleton.GetAccountByEmail(Session["Email"].ToString());
                 if (account.FirstName == "null")
                 {
                     account.FirstName = "";
                 }
+
                 if (account.LastName == "null")
                 {
                     account.LastName = "";
                 }
+
                 if (account.Location == "null")
                 {
                     account.Location = "";
                 }
+
                 return View(account);
             }
             catch
             {
                 return Redirect("/Home/Index");
             }
-
         }
 
         [HttpPost]
@@ -146,7 +151,9 @@ namespace DocumentRepositoryOnline.Controllers
                 {
                     account.Password = "null";
                 }
-                int rowsUpdated = DocumentRepository.DBSingleton.editAccount(Session["Email"].ToString(), account.Email, account.Password, account.FirstName, account.LastName, account.Location);
+
+                int rowsUpdated = DocumentRepository.DBSingleton.EditAccount(Session["Email"].ToString(), account.Email,
+                    account.Password, account.FirstName, account.LastName, account.Location);
                 if (rowsUpdated >= 1)
                 {
                     Session["Email"] = account.Email;
@@ -157,6 +164,7 @@ namespace DocumentRepositoryOnline.Controllers
                     return View();
                 }
             }
+
             return View();
         }
 
@@ -164,9 +172,7 @@ namespace DocumentRepositoryOnline.Controllers
         {
             try
             {
-                Groups groups = new Groups();
-                groups = DocumentRepository.DBSingleton.getGroupData(Session["Email"].ToString());
-
+                var groups = DocumentRepository.DBSingleton.GetGroupData(Session["Email"].ToString());
                 return View(groups);
             }
             catch
@@ -192,23 +198,25 @@ namespace DocumentRepositoryOnline.Controllers
         [HttpPost]
         public ActionResult CreateGroup(Groups group)
         {
-            if (DocumentRepository.DBSingleton.verifyGroupNameUnique(group.groupName))
+            if (DocumentRepository.DBSingleton.VerifyGroupNameUnique(group.GroupName))
             {
-                DocumentRepository.DBSingleton.createGroup(group.groupName);
-                int groupId = DocumentRepository.DBSingleton.getGroupId(group.groupName);
-                DocumentRepository.DBSingleton.addGroupMember(groupId, Session["Email"].ToString(), "admin");
+                DocumentRepository.DBSingleton.CreateGroup(group.GroupName);
+                int groupId = DocumentRepository.DBSingleton.GetGroupId(group.GroupName);
+                DocumentRepository.DBSingleton.AddGroupMember(groupId, Session["Email"].ToString(), "admin");
 
                 String path = Path.Combine(Server.MapPath("~/DocumentRepository"), "Groups");
-                if (DocumentRepository.DBSingleton.getFolderId(path) == 0)
+                if (DocumentRepository.DBSingleton.GetFolderId(path) == 0)
                 {
-                    DocumentRepository.DBSingleton.writeFolderWeb(path, null, 1);
+                    DocumentRepository.DBSingleton.WriteFolderWeb(path, null, 1);
                 }
-                String pathAndFolderName = path + "\\" + group.groupName;
-                DocumentRepository.DBSingleton.writeFolderWeb(pathAndFolderName,
-                                                            DocumentRepository.DBSingleton.getFolderId(path),
-                                                             1);
+
+                String pathAndFolderName = path + "\\" + group.GroupName;
+                DocumentRepository.DBSingleton.WriteFolderWeb(pathAndFolderName,
+                    DocumentRepository.DBSingleton.GetFolderId(path),
+                    1);
                 Directory.CreateDirectory(pathAndFolderName);
             }
+
             return RedirectToAction("Groups");
         }
 
@@ -217,6 +225,5 @@ namespace DocumentRepositoryOnline.Controllers
             Group group = new Group();
             return View(group);
         }
-
     }
 }

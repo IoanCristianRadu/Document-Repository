@@ -7,14 +7,6 @@ namespace DocumentRepositoryOnline.Models
 {
     public class FileDetailsVector
     {
-        List<FileDetails> fileDetailsList = new List<FileDetails>();
-
-        public List<FileDetails> FileDetailsList
-        {
-            get { return fileDetailsList; }
-            set { fileDetailsList = value; }
-        }
-
-
+        public List<FileDetails> FileDetailsList { get; set; } = new List<FileDetails>();
     }
 }

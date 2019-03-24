@@ -16,68 +16,74 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
     public class TextHandler
     {
-        public List<string> content = new List<string>();
-        public DateTime last_modified;
-        public DateTime date_created;
-        public long fileSize = 0;
-        public string extension;
-        public string author;
-        public string title;
-        public int pages;
-        public string path = "";
-        public string name;
+        public List<string> Content = new List<string>();
+        public DateTime LastModified;
+        public DateTime DateCreated;
+        public long FileSize = 0;
+        public string Extension;
+        public string Author;
+        public string Title;
+        public int Pages;
+        public string Path;
+        public string Name;
 
         public TextHandler(FileInfo f)
         {
-            this.last_modified = f.LastWriteTime;
-            this.date_created = f.CreationTime;
-            this.fileSize = f.Length / 1024; //bytes to kb
-            this.author = System.IO.File.GetAccessControl(f.FullName).GetOwner(typeof(System.Security.Principal.NTAccount)).ToString();
-            this.extension = f.Extension;
-            this.title = f.Name;
-            this.pages = 1;
-            this.path = f.FullName;
-            this.name = f.Name;
-            if (this.fileSize == 0)
+            this.LastModified = f.LastWriteTime;
+            this.DateCreated = f.CreationTime;
+            this.FileSize = f.Length / 1024; //bytes to kb
+            this.Author = System.IO.File.GetAccessControl(f.FullName)
+                .GetOwner(typeof(System.Security.Principal.NTAccount)).ToString();
+            this.Extension = f.Extension;
+            this.Title = f.Name;
+            this.Pages = 1;
+            this.Path = f.FullName;
+            this.Name = f.Name;
+            if (this.FileSize == 0)
             {
-                this.fileSize = 1;
+                this.FileSize = 1;
             }
         }
 
-        public virtual void extractContent()
+        public virtual void ExtractContent()
         {
             int splitLength = 3000;
-            if (extension == ".txt" || extension == ".html")
+            if (Extension == ".txt" || Extension == ".html")
             {
-                string fileContent = System.IO.File.ReadAllText(path);
+                string fileContent = System.IO.File.ReadAllText(Path);
                 for (int index = 0; index < fileContent.Length; index = index + splitLength)
                 {
                     if (fileContent.Length - index > splitLength)
                     {
-                        content.Add(fileContent.Substring(index, splitLength));
+                        Content.Add(fileContent.Substring(index, splitLength));
                     }
                     else
                     {
-                        content.Add(fileContent.Substring(index));
+                        Content.Add(fileContent.Substring(index));
                     }
                 }
             }
         }
 
-        public void writeToDB(OracleCommand cmd,int? folderId)
+        public void WriteToDb(OracleCommand cmd, int? folderId)
         {
-            cmd.CommandText = "Insert into file_details VALUES (default, TO_DATE('"+ this.last_modified + "' , 'mm/dd/yyyy HH:MI:SS AM') , TO_DATE('" + this.date_created + "' , 'mm/dd/yyyy HH:MI:SS AM' ) , " + this.fileSize + ",'" + this.extension + "','" + this.author + "','" + this.title + "'," + this.pages + "," + (folderId.GetValueOrDefault() == 0 ? "null" : folderId.ToString()) + ")";
+            cmd.CommandText = "Insert into file_details VALUES (default, TO_DATE('" + this.LastModified +
+                              "' , 'mm/dd/yyyy HH:MI:SS AM') , TO_DATE('" + this.DateCreated +
+                              "' , 'mm/dd/yyyy HH:MI:SS AM' ) , " + this.FileSize + ",'" + this.Extension + "','" +
+                              this.Author + "','" + this.Title + "'," + this.Pages + "," +
+                              (folderId.GetValueOrDefault() == 0 ? "null" : folderId.ToString()) + ")";
             int rowsUpdated = cmd.ExecuteNonQuery();
 
-            int file_details_id;
-            file_details_id = DBSingleton.getCurrentSeqValue("file_details_id.currval");
+            var fileDetailsId = DBSingleton.GetCurrentSeqValue("file_details_id.currval");
 
             int i = 1;
-            foreach (String s in this.content)
+            foreach (String s in this.Content)
             {
                 String page = s.Unidecode();
                 page = page.Replace("'", "''");
-                cmd.CommandText = "Insert into content_data values(default,'" + page + "'," + i + "," + (folderId.GetValueOrDefault() == 0 ? "null" : folderId.ToString()) + "," + file_details_id + ")";
+                cmd.CommandText = "Insert into content_data values(default,'" + page + "'," + i + "," +
+                                  (folderId.GetValueOrDefault() == 0 ? "null" : folderId.ToString()) + "," +
+                                  fileDetailsId + ")";
                 cmd.ExecuteNonQuery();
                 i++;
             }

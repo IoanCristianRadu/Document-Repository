@@ -11,8 +11,8 @@ namespace DocumentRepositoryOnline.Controllers
     {
         public ActionResult Index()
         {
-            return View();
             Session["Email"] = "";
+            return View();
         }
 
         public ActionResult About()

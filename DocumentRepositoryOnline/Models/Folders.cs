@@ -7,6 +7,6 @@ namespace DocumentRepositoryOnline.Models
 {
     public class Folders
     {
-        public List<Folder> folderList { get; set; }
+        public List<Folder> FolderList { get; set; }
     }
 }

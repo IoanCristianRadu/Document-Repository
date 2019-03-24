@@ -16,27 +16,27 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
     public class OfficeHandler : TextHandler
     {
-        public WordprocessingDocument wordDoc;
+        public WordprocessingDocument WordDoc;
 
         public OfficeHandler(FileInfo inputFile)
             : base(inputFile)
         {
-
         }
 
-        public override void extractContent()
+        public override void ExtractContent()
         {
-            if (this.extension == ".pptx")
+            if (this.Extension == ".pptx")
             {
-                using (PresentationDocument presentationDocument = PresentationDocument.Open(path, false))
+                using (PresentationDocument presentationDocument = PresentationDocument.Open(Path, false))
                 {
                     int slideIndex = 0;
 
                     // Verify that the presentation document exists.
                     if (presentationDocument == null)
                     {
-                        throw new ArgumentNullException("presentationDocument");
+                        throw new ArgumentNullException($"presentationDocument");
                     }
+
                     // Get the presentation part of the presentation document.
                     PresentationPart presentationPart = presentationDocument.PresentationPart;
 
@@ -59,7 +59,7 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                                 string slidePartRelationshipId = (slideIds[slideIndex] as SlideId).RelationshipId;
 
                                 // Get the specified slide part from the relationship ID.
-                                SlidePart slidePart = (SlidePart)presentationPart.GetPartById(slidePartRelationshipId);
+                                SlidePart slidePart = (SlidePart) presentationPart.GetPartById(slidePartRelationshipId);
                                 // Verify that the slide part exists.
                                 if (slidePart == null)
                                 {
@@ -71,25 +71,28 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                                 {
                                     String paragraphText = "";
                                     // Iterate through all the paragraphs in the slide.
-                                    foreach (var paragraph in slidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Paragraph>())
+                                    foreach (var paragraph in slidePart.Slide
+                                        .Descendants<DocumentFormat.OpenXml.Drawing.Paragraph>())
                                     {
                                         paragraphText = paragraphText + paragraph.InnerText + " | ";
                                     }
+
                                     if (paragraphText.Length > 0)
                                     {
                                         // Add each paragraph to the linked list.
-                                        content.Add(paragraphText.ToString());
+                                        Content.Add(paragraphText.ToString());
                                     }
                                 }
+
                                 slideIndex++;
                             }
                         }
                     }
                 }
             }
-            else if (this.extension == ".xlsx")
+            else if (this.Extension == ".xlsx")
             {
-                foreach (var worksheet in Workbook.Worksheets(path))
+                foreach (var worksheet in Workbook.Worksheets(Path))
                 {
                     String worksheetPage = "";
                     foreach (var row in worksheet.Rows)
@@ -102,17 +105,18 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                                 rowText = rowText + cell.Text + " | ";
                             }
                         }
-                        worksheetPage = worksheetPage + rowText;
 
+                        worksheetPage = worksheetPage + rowText;
                     }
-                    content.Add(worksheetPage);
+
+                    Content.Add(worksheetPage);
                 }
             }
-            else if (this.extension == ".docx")
+            else if (this.Extension == ".docx")
             {
-                wordDoc = WordprocessingDocument.Open(path, false);
-                String s = wordDoc.MainDocumentPart.Document.InnerText;
-                content.Add(s);
+                WordDoc = WordprocessingDocument.Open(Path, false);
+                String s = WordDoc.MainDocumentPart.Document.InnerText;
+                Content.Add(s);
             }
         }
     }

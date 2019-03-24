@@ -7,15 +7,14 @@ namespace DocumentRepositoryOnline.Models
 {
     public class Folder : IComparable
     {
-        public int ID { get; set; }
-
+        public int Id { get; set; }
         public String LocalPath { get; set; }
         public int ParentId { get; set; }
-        public int Fullscan { get; set; }
+        public int FullScan { get; set; }
 
         public int CompareTo(object obj)
         {
-            return this.LocalPath.CompareTo(((Folder)obj).LocalPath);
+            return String.Compare(this.LocalPath, ((Folder) obj).LocalPath, StringComparison.Ordinal);
         }
     }
 }

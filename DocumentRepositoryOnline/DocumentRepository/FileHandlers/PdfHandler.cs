@@ -15,25 +15,26 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
     public class PdfHandler : TextHandler
     {
-        public PdfHandler(FileInfo f):base(f)
+        public PdfHandler(FileInfo f) : base(f)
         {
-
         }
 
-        public override void extractContent()
+        public override void ExtractContent()
         {
-            if (String.Compare(this.path , "") != 0)
+            if (String.Compare(this.Path, "") != 0)
             {
-                PdfReader pdfReader = new PdfReader(this.path);
-                this.pages = pdfReader.NumberOfPages;
+                PdfReader pdfReader = new PdfReader(this.Path);
+                this.Pages = pdfReader.NumberOfPages;
                 for (int page = 1; page <= pdfReader.NumberOfPages; page++)
                 {
                     ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
                     string currentText = PdfTextExtractor.GetTextFromPage(pdfReader, page, strategy);
 
-                    currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
-                    content.Add(currentText);
+                    currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8,
+                        Encoding.Default.GetBytes(currentText)));
+                    Content.Add(currentText);
                 }
+
                 pdfReader.Close();
             }
         }

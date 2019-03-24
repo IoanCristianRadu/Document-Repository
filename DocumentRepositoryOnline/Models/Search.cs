@@ -9,39 +9,38 @@ namespace DocumentRepositoryOnline.Models
     public class Search
     {
         //Search options
-        [DisplayName("Content")]
-        public String content { get; set; }
+        [DisplayName("Content")] public String Content { get; set; }
 
         [DisplayName("Minimum ammount of pages")]
-        public int pagesMin { get; set; }
+        public int PagesMin { get; set; }
 
         [DisplayName("Maximum ammount of pages")]
-        public int pagesMax { get; set; }
+        public int PagesMax { get; set; }
 
         [DisplayName("Minimum date for last modified")]
-        public String lastModifiedMin { get; set; }
+        public String LastModifiedMin { get; set; }
 
         [DisplayName("Maximum date for last modified")]
-        public String lastModifiedMax { get; set; }
+        public String LastModifiedMax { get; set; }
 
         [DisplayName("Minimum date of creation")]
-        public String creationDateMin { get; set; }
+        public String CreationDateMin { get; set; }
 
         [DisplayName("Maximum date of creation")]
-        public String creationDateMax { get; set; }
+        public String CreationDateMax { get; set; }
 
         [DisplayName("Minimum file size")]
-        public int fileSizeMin { get; set; }
+        public int FileSizeMin { get; set; }
 
         [DisplayName("Maximum file size")]
-        public int fileSizeMax { get; set; }
+        public int FileSizeMax { get; set; }
 
         [DisplayName("File extension")]
-        public String extension { get; set; }
+        public String Extension { get; set; }
 
         [DisplayName("File name")]
-        public String title { get; set; }
+        public String Title { get; set; }
 
-        public List<DocumentRepository.Record> recordList = new List<DocumentRepository.Record>();
+        public List<DocumentRepository.Record> RecordList = new List<DocumentRepository.Record>();
     }
 }

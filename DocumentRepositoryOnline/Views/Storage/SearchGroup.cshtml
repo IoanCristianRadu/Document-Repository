@@ -5,105 +5,105 @@
     Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
 }
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h2 class="centeredText">Search</h2>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
         <div class="form-group">
-            @Html.LabelFor(model => model.content, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Content, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.content, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.content, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Content, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Content, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.pagesMin, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.PagesMin, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.pagesMin, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.pagesMin, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.PagesMin, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.PagesMin, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.pagesMax, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.PagesMax, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.pagesMax, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.pagesMax, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.PagesMax, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.PagesMax, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.lastModifiedMin, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.LastModifiedMin, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.lastModifiedMin, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.lastModifiedMin, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.LastModifiedMin, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.LastModifiedMin, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.lastModifiedMax, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.LastModifiedMax, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.lastModifiedMax, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.lastModifiedMax, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.LastModifiedMax, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.LastModifiedMax, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.creationDateMin, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CreationDateMin, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.creationDateMin, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.creationDateMin, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.CreationDateMin, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.CreationDateMin, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.creationDateMax, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CreationDateMax, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.creationDateMax, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.creationDateMax, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.CreationDateMax, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.CreationDateMax, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.fileSizeMin, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.FileSizeMin, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.fileSizeMin, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fileSizeMin, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.FileSizeMin, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.FileSizeMin, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.fileSizeMax, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.FileSizeMax, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.fileSizeMax, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fileSizeMax, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.FileSizeMax, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.FileSizeMax, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.extension, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Extension, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.extension, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.extension, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Extension, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Extension, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.title, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Title, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Title, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Title, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Search" class="btn btn-default myButton" />
+                <input type="submit" value="Search" class="btn btn-default myButton"/>
             </div>
         </div>
     </div>
@@ -120,49 +120,49 @@
             <div class="bs-component">
                 <table class="table table-striped table-hover ">
                     <thead>
-                        <tr>
-                            <th>Last modified</th>
-                            <th>Date created</th>
-                            <th>Filesize</th>
-                            <th>Extension</th>
-                            <th>Author</th>
-                            <th>Title</th>
-                            <th>Pages</th>
-                            <th>Relevant content</th>
-                        </tr>
+                    <tr>
+                        <th>Last modified</th>
+                        <th>Date created</th>
+                        <th>FileSize</th>
+                        <th>Extension</th>
+                        <th>Author</th>
+                        <th>Title</th>
+                        <th>Pages</th>
+                        <th>Relevant content</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null)
+                    @if (Model != null)
+                    {
+                        foreach (DocumentRepositoryOnline.DocumentRepository.Record record in Model.RecordList)
                         {
-                            foreach (DocumentRepositoryOnline.DocumentRepository.Record record in Model.recordList)
+                            if (record.IsCorrectPath)
                             {
-                                if (record.isCorrectPath)
-                                {
-                                    <tr>
-                                        <td>@record.Last_modified</td>
-                                        <td>@record.Date_created</td>
-                                        <td>@record.Filesize</td>
-                                        <td>@record.Extension</td>
-                                        <td>@record.Author</td>
-                                        <td>@record.Title</td>
-                                        <td>@record.Pages</td>
-                                        <td>@record.RelevantContent</td>
-                                        <td>
-                                            @using (Html.BeginForm("Download", "Storage", new { path = @record.Local_path + "\\" + record.Title }))
-                                            {
-                                                <button class="btn btn-primary" title="Download" type="submit">Download</button>
-                                            }
-                                        </td>
-                                        <td>
-                                            @using (Html.BeginForm("OpenFolder", "Storage", new { folderPath = @record.Local_path }))
-                                            {
-                                                <button class="btn btn-success" title="Open" type="submit">Open</button>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
+                                <tr>
+                                    <td>@record.LastModified</td>
+                                    <td>@record.DateCreated</td>
+                                    <td>@record.FileSize</td>
+                                    <td>@record.Extension</td>
+                                    <td>@record.Author</td>
+                                    <td>@record.Title</td>
+                                    <td>@record.Pages</td>
+                                    <td>@record.RelevantContent</td>
+                                    <td>
+                                        @using (Html.BeginForm("Download", "Storage", new {path = @record.LocalPath + "\\" + record.Title}))
+                                        {
+                                            <button class="btn btn-primary" title="Download" type="submit">Download</button>
+                                        }
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("OpenFolder", "Storage", new {folderPath = @record.LocalPath}))
+                                        {
+                                            <button class="btn btn-success" title="Open" type="submit">Open</button>
+                                        }
+                                    </td>
+                                </tr>
                             }
                         }
+                    }
                     </tbody>
                 </table>
                 <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div>
@@ -172,16 +172,15 @@
 </div>
 
 
-
 <style>
-        .centeredText {
+    .centeredText {
         text-align: center;
         font-weight: bold;
     }
-        .boldText{
-            font-weight: bold;
-        }
-            .myButton {
+
+    .boldText { font-weight: bold; }
+
+    .myButton {
         position: relative;
         margin: auto;
         box-sizing: border-box;

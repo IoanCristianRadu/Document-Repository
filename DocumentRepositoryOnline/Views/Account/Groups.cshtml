@@ -7,21 +7,21 @@
     <h1>Create a new group</h1>
     @using (Html.BeginForm("CreateGroup", "Account", FormMethod.Post))
     {
-        @Html.EditorFor(model => model.groupName, new { htmlAttributes = new { @class = "form-control myCentered centeredText", @placeholder = "Group name" } })
+        @Html.EditorFor(model => model.GroupName, new {htmlAttributes = new {@class = "form-control myCentered centeredText", @placeholder = "Group name"}})
         <button class="btn btn-warning marginTop myButton" title="Create" type="submit">Create</button>
     }
 
 </div>
 
-@if (Model.groupList != null)
+@if (Model.GroupList != null)
 {
-    foreach (DocumentRepositoryOnline.Models.Group group in Model.groupList)
+    foreach (DocumentRepositoryOnline.Models.Group group in Model.GroupList)
     {
         <div class="rectangle">
             <p>@group.GroupName</p>
             <p>@group.MemberType</p>
             <p>
-                @using (Html.BeginForm("GoToGroup", "Storage", new { groupName = @group.GroupName }))
+                @using (Html.BeginForm("GoToGroup", "Storage", new {groupName = @group.GroupName}))
                 {
                     <button class="btn btn-primary btn-lg" title="Open group">Open group</button>
                 }
@@ -45,7 +45,7 @@
     .createGroupRectangle {
         background: #fff;
         border-radius: 10px;
-        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        box-shadow: 0 0 25px rgba(0, 0, 0, .04);
         padding: 30px;
         box-sizing: border-box;
         width: 75%;
@@ -58,7 +58,7 @@
     .rectangle {
         background: #fff;
         border-radius: 10px;
-        box-shadow: 0 0 25px rgba(0,0,0,.04);
+        box-shadow: 0 0 25px rgba(0, 0, 0, .04);
         margin: 20px 20px;
         padding: 30px;
         box-sizing: border-box;
@@ -67,9 +67,7 @@
         position: relative;
     }
 
-    .marginTop {
-        margin-top: 20px !important;
-    }
+    .marginTop { margin-top: 20px !important; }
 
     .fixedButton {
         position: fixed;

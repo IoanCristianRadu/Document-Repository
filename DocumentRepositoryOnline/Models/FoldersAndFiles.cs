@@ -7,9 +7,9 @@ namespace DocumentRepositoryOnline.Models
 {
     public class FoldersAndFiles
     {
-        public Folders folderList { get; set; }
-        public FileDetailsVector fileList { get; set; }
-        public String createFolderPath { get; set; }
-        public String addEmail { get; set; }
+        public Folders FolderList { get; set; }
+        public FileDetailsVector FileList { get; set; }
+        public String CreateFolderPath { get; set; }
+        public String AddEmail { get; set; }
     }
 }

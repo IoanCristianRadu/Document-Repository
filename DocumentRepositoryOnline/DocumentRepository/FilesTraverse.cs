@@ -18,24 +18,21 @@ namespace DocumentRepositoryOnline.DocumentRepository
 {
     class FilesTraverse
     {
-        private Dictionary<FileInfo, int> listaFisiere = new Dictionary<FileInfo, int>();
-        String path;
+        private Dictionary<FileInfo, int> _files = new Dictionary<FileInfo, int>();
+        private String _path;
 
         public String Path
         {
-            get { return path; }
-            set { path = value; }
+            get { return _path; }
+            set { _path = value; }
         }
 
-        public Dictionary<FileInfo, int> ListaFisiere
+        public Dictionary<FileInfo, int> Files
         {
-            get
-            {
-                return listaFisiere;
-            }
+            get { return _files; }
         }
 
-        public TextHandler createHandlerType(FileInfo file)
+        public TextHandler CreateHandlerType(FileInfo file)
         {
             TextHandler textHandler = null;
             if (file.Extension == ".txt" || file.Extension == ".html")
@@ -50,17 +47,19 @@ namespace DocumentRepositoryOnline.DocumentRepository
             {
                 textHandler = new OfficeHandler(file);
             }
+
             return textHandler;
         }
 
-        public bool doUnitOfWork()
+        public bool DoUnitOfWork()
         {
-            if (ListaFisiere.Count > 0)
+            if (Files.Count > 0)
             {
-                Write(createHandlerType(ListaFisiere.First().Key), ListaFisiere.First().Value);
-                ListaFisiere.Remove(ListaFisiere.First().Key);
+                Write(CreateHandlerType(Files.First().Key), Files.First().Value);
+                Files.Remove(Files.First().Key);
                 return true;
             }
+
             return false;
         }
 
@@ -68,13 +67,13 @@ namespace DocumentRepositoryOnline.DocumentRepository
         {
             try
             {
-                OracleConnection Conn = DBSingleton.Conn;
+                OracleConnection conn = DBSingleton.Conn;
                 if (textHandler != null)
                 {
-                    textHandler.extractContent();
+                    textHandler.ExtractContent();
                     OracleCommand cmd = new OracleCommand();
-                    cmd.Connection = Conn;
-                    textHandler.writeToDB(cmd, folderId);
+                    cmd.Connection = conn;
+                    textHandler.WriteToDb(cmd, folderId);
                 }
             }
             catch (Exception e)
@@ -83,17 +82,19 @@ namespace DocumentRepositoryOnline.DocumentRepository
             }
         }
 
-        public FilesTraverse(String path, int option) // 1 - files in folder, files in subfolders, 0 - only files in current folder
+        public
+            FilesTraverse(String path,
+                int option) // 1 - files in folder, files in subfolders, 0 - only files in current folder
         {
             DirectoryInfo directory = new DirectoryInfo(path);
-            string extensionList = DBSingleton.getFiletypes();
+            string extensionList = DBSingleton.GetFiletypes();
 
-            int folderId = DBSingleton.writeFolder(path, null, 1);
+            int folderId = DBSingleton.WriteFolder(path, null, 1);
             foreach (var file in directory.GetFiles())
             {
                 if (extensionList.Contains(file.Extension))
                 {
-                    ListaFisiere.Add(file, folderId);
+                    Files.Add(file, folderId);
                 }
             }
 
@@ -101,22 +102,23 @@ namespace DocumentRepositoryOnline.DocumentRepository
             {
                 foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
                 {
-                    folderId = DBSingleton.writeFolder(dir.Name, 1, 1);
+                    folderId = DBSingleton.WriteFolder(dir.Name, 1, 1);
                     foreach (var file in dir.GetFiles())
                     {
                         if (extensionList.Contains(file.Extension))
                         {
-                            ListaFisiere.Add(file, folderId);
+                            Files.Add(file, folderId);
                         }
                     }
                 }
             }
+
             DBSingleton.CloseConnection();
         }
 
         public FilesTraverse(String[] list)
         {
-            string extensionList = DBSingleton.getFiletypes();
+            string extensionList = DBSingleton.GetFiletypes();
             FileInfo fi = new FileInfo(list[0]);
             String fullPath = fi.FullName;
             String path = "";
@@ -129,18 +131,17 @@ namespace DocumentRepositoryOnline.DocumentRepository
                     break;
                 }
             }
-            int folderId = DBSingleton.writeFolder(path, null, 0);
+
+            var folderId = DBSingleton.WriteFolder(path, null, 0);
 
             foreach (String file in list)
             {
                 FileInfo fileInfo = new FileInfo(file);
                 if (fileInfo.Exists && extensionList.Contains(fileInfo.Extension))
                 {
-                    listaFisiere.Add(fileInfo, folderId);
+                    _files.Add(fileInfo, folderId);
                 }
             }
         }
     }
 }
-
-

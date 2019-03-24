@@ -2,6 +2,7 @@
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(DocumentRepositoryOnline.Startup))]
+
 namespace DocumentRepositoryOnline
 {
     public partial class Startup

@@ -7,7 +7,7 @@ namespace DocumentRepositoryOnline.Models
 {
     public class Groups
     {
-        public List<Group> groupList { get; set; }
-        public String groupName { get; set; }
+        public List<Group> GroupList { get; set; }
+        public String GroupName { get; set; }
     }
 }

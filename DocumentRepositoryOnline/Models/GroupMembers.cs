@@ -7,6 +7,6 @@ namespace DocumentRepositoryOnline.Models
 {
     public class GroupMembers
     {
-        public List<GroupMember> groupMemberList { get; set; }
+        public List<GroupMember> GroupMemberList { get; set; }
     }
 }

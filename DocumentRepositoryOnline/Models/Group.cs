@@ -9,9 +9,7 @@ namespace DocumentRepositoryOnline.Models
     public class Group
     {
         public int GroupId { get; set; }
-
-        [DisplayName("Group name")]
-        public String GroupName { get; set; }
+        [DisplayName("Group name")] public String GroupName { get; set; }
         public String DateCreated { get; set; }
         public String MemberType { get; set; }
         public String AccountEmail { get; set; }

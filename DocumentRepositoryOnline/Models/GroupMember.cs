@@ -7,8 +7,8 @@ namespace DocumentRepositoryOnline.Models
 {
     public class GroupMember
     {
-        public int groupId { get; set; }
-        public String accountEmail { get; set; }
-        public String memberType { get; set; }
+        public int GroupId { get; set; }
+        public String AccountEmail { get; set; }
+        public String MemberType { get; set; }
     }
 }

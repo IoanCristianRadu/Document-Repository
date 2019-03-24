@@ -7,7 +7,7 @@ namespace DocumentRepositoryOnline.Models
 {
     public class FileDetails : IComparable
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public String LastModified { get; set; }
         public String DateCreated { get; set; }
         public int FileSize { get; set; }
@@ -21,7 +21,7 @@ namespace DocumentRepositoryOnline.Models
 
         public int CompareTo(object obj)
         {
-            return this.Title.CompareTo(((FileDetails)obj).Title);
+            return String.Compare(this.Title, ((FileDetails) obj).Title, StringComparison.Ordinal);
         }
     }
 }

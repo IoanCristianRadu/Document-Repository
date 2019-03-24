@@ -119,7 +119,7 @@ namespace DocumentRepositoryOnline.DocumentRepository
             return -1;
         }
 
-        public static int WriteFolderWeb(String path, int? parentId, int fullScan)
+        public static int WriteWebFolder(String path, int? parentId, int fullScan)
         {
             try
             {

@@ -14,20 +14,37 @@ using Excel;
 
 namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
-    public class OfficeHandler : TextHandler
+    public class OfficeHandler : IFileHandler
     {
+        public FileDetails FileData;
         public WordprocessingDocument WordDoc;
 
-        public OfficeHandler(FileInfo inputFile)
-            : base(inputFile)
+        public OfficeHandler(FileInfo f)
         {
+            FileData = new FileDetails(
+                f.LastWriteTime,
+                f.CreationTime,
+                f.Extension,
+                System.IO.File.GetAccessControl(f.FullName)
+                    .GetOwner(typeof(System.Security.Principal.NTAccount))
+                    .ToString(),
+                f.Name,
+                1,
+                f.FullName,
+                f.Name,
+                f.Length / 1024);
+
+            if (FileData.FileSize == 0)
+            {
+                FileData.FileSize = 1;
+            }
         }
 
-        public override void ExtractContent()
+        public void ExtractContent()
         {
-            if (this.Extension == ".pptx")
+            if (FileData.Extension == ".pptx")
             {
-                using (PresentationDocument presentationDocument = PresentationDocument.Open(Path, false))
+                using (PresentationDocument presentationDocument = PresentationDocument.Open(FileData.Path, false))
                 {
                     int slideIndex = 0;
 
@@ -80,7 +97,7 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                                     if (paragraphText.Length > 0)
                                     {
                                         // Add each paragraph to the linked list.
-                                        Content.Add(paragraphText.ToString());
+                                        FileData.Content.Add(paragraphText.ToString());
                                     }
                                 }
 
@@ -90,9 +107,9 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                     }
                 }
             }
-            else if (this.Extension == ".xlsx")
+            else if (FileData.Extension == ".xlsx")
             {
-                foreach (var worksheet in Workbook.Worksheets(Path))
+                foreach (var worksheet in Workbook.Worksheets(FileData.Path))
                 {
                     String worksheetPage = "";
                     foreach (var row in worksheet.Rows)
@@ -109,15 +126,25 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
                         worksheetPage = worksheetPage + rowText;
                     }
 
-                    Content.Add(worksheetPage);
+                    FileData.Content.Add(worksheetPage);
                 }
             }
-            else if (this.Extension == ".docx")
+            else if (FileData.Extension == ".docx")
             {
-                WordDoc = WordprocessingDocument.Open(Path, false);
+                WordDoc = WordprocessingDocument.Open(FileData.Path, false);
                 String s = WordDoc.MainDocumentPart.Document.InnerText;
-                Content.Add(s);
+                FileData.Content.Add(s);
             }
+        }
+
+        public void WriteToDb(IDbFileWriter dbFileWriter)
+        {
+            dbFileWriter.WriteToDb(FileData);
+        }
+
+        public FileDetails getFileDetails()
+        {
+            return FileData;
         }
     }
 }

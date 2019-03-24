@@ -35,10 +35,10 @@ namespace DocumentRepositoryOnline.Controllers
         {
             if (account.Password == account.RetypePassword)
             {
-                bool accountExists = DocumentRepository.DBSingleton.VerifyAccountIsUnique(account.Email);
+                bool accountExists = DocumentRepository.DbSingleton.VerifyAccountIsUnique(account.Email);
                 if (!accountExists)
                 {
-                    DocumentRepository.DBSingleton.Register(account.Email, account.Password,
+                    DocumentRepository.DbSingleton.Register(account.Email, account.Password,
                         DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" +
                         DateTime.Now.Year.ToString(), "standard");
                     Session["Email"] = account.Email;
@@ -66,10 +66,10 @@ namespace DocumentRepositoryOnline.Controllers
         [HttpPost]
         public ActionResult Login(Account account)
         {
-            bool accountExists = DocumentRepository.DBSingleton.VerifyAccountIsUnique(account.Email);
+            bool accountExists = DocumentRepository.DbSingleton.VerifyAccountIsUnique(account.Email);
             if (accountExists)
             {
-                if (DocumentRepository.DBSingleton.VerifyAccountPassword(account.Email, account.Password) == 1)
+                if (DocumentRepository.DbSingleton.VerifyAccountPassword(account.Email, account.Password) == 1)
                 {
                     Session["Email"] = account.Email;
                     return Redirect("/Storage/Personal");
@@ -85,7 +85,7 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 if (Session["Email"] != null)
                 {
-                    var account = DocumentRepository.DBSingleton.GetAccountByEmail(Session["Email"].ToString());
+                    var account = DocumentRepository.DbSingleton.GetAccountByEmail(Session["Email"].ToString());
                     if (account.FirstName == "null")
                     {
                         account.FirstName = "-";
@@ -108,7 +108,7 @@ namespace DocumentRepositoryOnline.Controllers
                     return RedirectToAction("Login");
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return RedirectToAction("Login");
             }
@@ -118,7 +118,7 @@ namespace DocumentRepositoryOnline.Controllers
         {
             try
             {
-                Account account = DocumentRepository.DBSingleton.GetAccountByEmail(Session["Email"].ToString());
+                Account account = DocumentRepository.DbSingleton.GetAccountByEmail(Session["Email"].ToString());
                 if (account.FirstName == "null")
                 {
                     account.FirstName = "";
@@ -152,7 +152,7 @@ namespace DocumentRepositoryOnline.Controllers
                     account.Password = "null";
                 }
 
-                int rowsUpdated = DocumentRepository.DBSingleton.EditAccount(Session["Email"].ToString(), account.Email,
+                int rowsUpdated = DocumentRepository.DbSingleton.EditAccount(Session["Email"].ToString(), account.Email,
                     account.Password, account.FirstName, account.LastName, account.Location);
                 if (rowsUpdated >= 1)
                 {
@@ -172,7 +172,7 @@ namespace DocumentRepositoryOnline.Controllers
         {
             try
             {
-                var groups = DocumentRepository.DBSingleton.GetGroupData(Session["Email"].ToString());
+                var groups = DocumentRepository.DbSingleton.GetGroupData(Session["Email"].ToString());
                 return View(groups);
             }
             catch
@@ -198,21 +198,21 @@ namespace DocumentRepositoryOnline.Controllers
         [HttpPost]
         public ActionResult CreateGroup(Groups group)
         {
-            if (DocumentRepository.DBSingleton.VerifyGroupNameUnique(group.GroupName))
+            if (DocumentRepository.DbSingleton.VerifyGroupNameUnique(group.GroupName))
             {
-                DocumentRepository.DBSingleton.CreateGroup(group.GroupName);
-                int groupId = DocumentRepository.DBSingleton.GetGroupId(group.GroupName);
-                DocumentRepository.DBSingleton.AddGroupMember(groupId, Session["Email"].ToString(), "admin");
+                DocumentRepository.DbSingleton.CreateGroup(group.GroupName);
+                int groupId = DocumentRepository.DbSingleton.GetGroupId(group.GroupName);
+                DocumentRepository.DbSingleton.AddGroupMember(groupId, Session["Email"].ToString(), "admin");
 
                 String path = Path.Combine(Server.MapPath("~/DocumentRepository"), "Groups");
-                if (DocumentRepository.DBSingleton.GetFolderId(path) == 0)
+                if (DocumentRepository.DbSingleton.GetFolderId(path) == 0)
                 {
-                    DocumentRepository.DBSingleton.WriteFolderWeb(path, null, 1);
+                    DocumentRepository.DbSingleton.WriteFolderWeb(path, null, 1);
                 }
 
                 String pathAndFolderName = path + "\\" + group.GroupName;
-                DocumentRepository.DBSingleton.WriteFolderWeb(pathAndFolderName,
-                    DocumentRepository.DBSingleton.GetFolderId(path),
+                DocumentRepository.DbSingleton.WriteFolderWeb(pathAndFolderName,
+                    DocumentRepository.DbSingleton.GetFolderId(path),
                     1);
                 Directory.CreateDirectory(pathAndFolderName);
             }

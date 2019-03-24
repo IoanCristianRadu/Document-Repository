@@ -1,16 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
-using System.ComponentModel;
 using Oracle.ManagedDataAccess.Client;
 using DocumentRepositoryOnline.DocumentRepository.FileHandlers;
 
@@ -18,62 +9,57 @@ namespace DocumentRepositoryOnline.DocumentRepository
 {
     class FilesTraverse
     {
-        private Dictionary<FileInfo, int> _files = new Dictionary<FileInfo, int>();
+        private Dictionary<FileInfo, int> _filesQueue = new Dictionary<FileInfo, int>();
         private String _path;
 
         public String Path
         {
-            get { return _path; }
-            set { _path = value; }
+            get => _path;
+            set => _path = value;
         }
 
-        public Dictionary<FileInfo, int> Files
+        public Dictionary<FileInfo, int> FilesQueue
         {
-            get { return _files; }
+            get { return _filesQueue; }
         }
 
-        public TextHandler CreateHandlerType(FileInfo file)
+        public IFileHandler CreateHandlerType(FileInfo file)
         {
-            TextHandler textHandler = null;
+            IFileHandler fileHandler = null;
             if (file.Extension == ".txt" || file.Extension == ".html")
             {
-                textHandler = new TextHandler(file);
+                fileHandler = new TextHandler(file);
             }
             else if (file.Extension == ".pdf")
             {
-                textHandler = new PdfHandler(file);
+                fileHandler = new PdfHandler(file);
             }
             else if (file.Extension == ".docx" || file.Extension == ".xlsx" || file.Extension == ".pptx")
             {
-                textHandler = new OfficeHandler(file);
+                fileHandler = new OfficeHandler(file);
             }
 
-            return textHandler;
+            return fileHandler;
         }
 
         public bool DoUnitOfWork()
         {
-            if (Files.Count > 0)
-            {
-                Write(CreateHandlerType(Files.First().Key), Files.First().Value);
-                Files.Remove(Files.First().Key);
-                return true;
-            }
-
-            return false;
+            if (FilesQueue.Count <= 0) return false;
+            Write(CreateHandlerType(FilesQueue.First().Key), FilesQueue.First().Value);
+            FilesQueue.Remove(FilesQueue.First().Key);
+            return true;
         }
 
-        public static void Write(TextHandler textHandler, int? folderId)
+        public static void Write(IFileHandler fileHandler, int? folderId)
         {
             try
             {
-                OracleConnection conn = DBSingleton.Conn;
-                if (textHandler != null)
+                OracleConnection conn = DbSingleton.Conn;
+                if (fileHandler != null)
                 {
-                    textHandler.ExtractContent();
-                    OracleCommand cmd = new OracleCommand();
-                    cmd.Connection = conn;
-                    textHandler.WriteToDb(cmd, folderId);
+                    fileHandler.ExtractContent();
+                    OracleCommand cmd = new OracleCommand {Connection = conn};
+                    fileHandler.WriteToDb(new DbFileWriter(cmd, folderId));
                 }
             }
             catch (Exception e)
@@ -87,14 +73,14 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 int option) // 1 - files in folder, files in subfolders, 0 - only files in current folder
         {
             DirectoryInfo directory = new DirectoryInfo(path);
-            string extensionList = DBSingleton.GetFiletypes();
+            string extensionList = DbSingleton.GetFileTypes();
 
-            int folderId = DBSingleton.WriteFolder(path, null, 1);
+            int folderId = DbSingleton.WriteFolder(path, null, 1);
             foreach (var file in directory.GetFiles())
             {
                 if (extensionList.Contains(file.Extension))
                 {
-                    Files.Add(file, folderId);
+                    FilesQueue.Add(file, folderId);
                 }
             }
 
@@ -102,23 +88,23 @@ namespace DocumentRepositoryOnline.DocumentRepository
             {
                 foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
                 {
-                    folderId = DBSingleton.WriteFolder(dir.Name, 1, 1);
+                    folderId = DbSingleton.WriteFolder(dir.Name, 1, 1);
                     foreach (var file in dir.GetFiles())
                     {
                         if (extensionList.Contains(file.Extension))
                         {
-                            Files.Add(file, folderId);
+                            FilesQueue.Add(file, folderId);
                         }
                     }
                 }
             }
 
-            DBSingleton.CloseConnection();
+            DbSingleton.CloseConnection();
         }
 
         public FilesTraverse(String[] list)
         {
-            string extensionList = DBSingleton.GetFiletypes();
+            string extensionList = DbSingleton.GetFileTypes();
             FileInfo fi = new FileInfo(list[0]);
             String fullPath = fi.FullName;
             String path = "";
@@ -132,14 +118,14 @@ namespace DocumentRepositoryOnline.DocumentRepository
                 }
             }
 
-            var folderId = DBSingleton.WriteFolder(path, null, 0);
+            var folderId = DbSingleton.WriteFolder(path, null, 0);
 
             foreach (String file in list)
             {
                 FileInfo fileInfo = new FileInfo(file);
                 if (fileInfo.Exists && extensionList.Contains(fileInfo.Extension))
                 {
-                    _files.Add(fileInfo, folderId);
+                    _filesQueue.Add(fileInfo, folderId);
                 }
             }
         }

@@ -30,11 +30,11 @@ namespace DocumentRepositoryOnline.Controllers
                     Session["FolderPath"] = path;
 
                     foldersAndFiles.FileList =
-                        DocumentRepository.DBSingleton.ReadFileDetailsByEmail(Session["Email"].ToString());
+                        DocumentRepository.DbSingleton.ReadFileDetailsByEmail(Session["Email"].ToString());
                     foldersAndFiles.FileList.FileDetailsList.Sort();
 
-                    int folderId = DocumentRepository.DBSingleton.GetFolderId(path);
-                    subfolderList = DocumentRepository.DBSingleton.GetSubfolders(folderId);
+                    int folderId = DocumentRepository.DbSingleton.GetFolderId(path);
+                    subfolderList = DocumentRepository.DbSingleton.GetSubfolders(folderId);
                     Folders folders = new Folders {FolderList = subfolderList};
 
                     foldersAndFiles.FolderList = folders;
@@ -42,11 +42,11 @@ namespace DocumentRepositoryOnline.Controllers
                 }
                 else
                 {
-                    int folderId = DocumentRepository.DBSingleton.GetFolderId(Session["FolderPath"].ToString());
-                    subfolderList = DocumentRepository.DBSingleton.GetSubfolders(folderId);
+                    int folderId = DocumentRepository.DbSingleton.GetFolderId(Session["FolderPath"].ToString());
+                    subfolderList = DocumentRepository.DbSingleton.GetSubfolders(folderId);
                     Folders folders = new Folders {FolderList = subfolderList};
 
-                    foldersAndFiles.FileList = DocumentRepository.DBSingleton.ReadFileDetailsByFolderId(folderId);
+                    foldersAndFiles.FileList = DocumentRepository.DbSingleton.ReadFileDetailsByFolderId(folderId);
                     foldersAndFiles.FileList.FileDetailsList.Sort();
 
                     foldersAndFiles.FolderList = folders;
@@ -83,7 +83,7 @@ namespace DocumentRepositoryOnline.Controllers
                     if (!Directory.Exists(sessionPath))
                     {
                         Directory.CreateDirectory(sessionPath);
-                        DocumentRepository.DBSingleton.WriteFolderWeb(sessionPath, null, 1);
+                        DocumentRepository.DbSingleton.WriteFolderWeb(sessionPath, null, 1);
                     }
 
                     foreach (HttpPostedFileBase file in files)
@@ -95,9 +95,9 @@ namespace DocumentRepositoryOnline.Controllers
                             file.SaveAs(filePath);
                             FileInfo fileInfo = new FileInfo(filePath);
 
-                            int folderId = DocumentRepository.DBSingleton.GetFolderId(sessionPath);
+                            int folderId = DocumentRepository.DbSingleton.GetFolderId(sessionPath);
 
-                            var fileDetailsVector = DocumentRepository.DBSingleton.ReadFileDetailsByFolderId(folderId);
+                            var fileDetailsVector = DocumentRepository.DbSingleton.ReadFileDetailsByFolderId(folderId);
 
                             bool fileAlreadyExists = false;
                             foreach (var fileDetails in fileDetailsVector.FileDetailsList)
@@ -111,7 +111,7 @@ namespace DocumentRepositoryOnline.Controllers
 
                             if (!fileAlreadyExists)
                             {
-                                DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(),
+                                DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(),
                                     folderId);
                                 ViewBag.Message = "File Uploaded Successfully!!";
                             }
@@ -137,8 +137,8 @@ namespace DocumentRepositoryOnline.Controllers
                             string filePath = sessionPath + "\\" + fileName;
                             file.SaveAs(filePath);
                             FileInfo fileInfo = new FileInfo(filePath);
-                            int folderId = DocumentRepository.DBSingleton.GetFolderId(sessionPath);
-                            DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
+                            int folderId = DocumentRepository.DbSingleton.GetFolderId(sessionPath);
+                            DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
                         }
                     }
                 }
@@ -149,7 +149,7 @@ namespace DocumentRepositoryOnline.Controllers
                 }
                 else if (files.Count > 1)
                 {
-                    ViewBag.Message = "Files Uploaded Successfully!!";
+                    ViewBag.Message = "FilesQueue Uploaded Successfully!!";
                 }
 
                 return RedirectToAction("Personal");
@@ -176,9 +176,9 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 if (Session["FolderPath"] == null || Session["FolderPath"].ToString() == path)
                 {
-                    if (!DocumentRepository.DBSingleton.VerifyFolderPathExists(path))
+                    if (!DocumentRepository.DbSingleton.VerifyFolderPathExists(path))
                     {
-                        DocumentRepository.DBSingleton.WriteFolderWeb(path, null, 1);
+                        DocumentRepository.DbSingleton.WriteFolderWeb(path, null, 1);
                     }
                 }
                 else
@@ -188,10 +188,10 @@ namespace DocumentRepositoryOnline.Controllers
 
                 String pathAndFolderName = path + "\\" + foldersAndFiles.CreateFolderPath;
 
-                if (!DocumentRepository.DBSingleton.VerifyFolderPathExists(pathAndFolderName))
+                if (!DocumentRepository.DbSingleton.VerifyFolderPathExists(pathAndFolderName))
                 {
-                    DocumentRepository.DBSingleton.WriteFolderWeb(pathAndFolderName,
-                        DocumentRepository.DBSingleton.GetFolderId(path),
+                    DocumentRepository.DbSingleton.WriteFolderWeb(pathAndFolderName,
+                        DocumentRepository.DbSingleton.GetFolderId(path),
                         1);
                     Directory.CreateDirectory(pathAndFolderName);
                 }
@@ -231,7 +231,7 @@ namespace DocumentRepositoryOnline.Controllers
         public ActionResult DeleteFile(String filePath)
         {
             FileInfo file = new FileInfo(filePath);
-            DocumentRepository.DBSingleton.DeleteFile(filePath);
+            DocumentRepository.DbSingleton.DeleteFile(filePath);
             file.Delete();
 
             return RedirectToAction("Personal");
@@ -242,7 +242,7 @@ namespace DocumentRepositoryOnline.Controllers
             try
             {
                 DirectoryInfo directory = new DirectoryInfo(folderPath);
-                DocumentRepository.DBSingleton.DeleteFolder(folderPath);
+                DocumentRepository.DbSingleton.DeleteFolder(folderPath);
                 directory.Delete(true);
             }
             catch
@@ -285,8 +285,8 @@ namespace DocumentRepositoryOnline.Controllers
                     string[] splitter = filePath.Split('\\');
                     String fileName = splitter[splitter.Length - 1];
                     fileInfo.MoveTo(Session["FolderPath"].ToString() + "\\" + fileName);
-                    int folderId = DocumentRepository.DBSingleton.GetFolderId(Session["FolderPath"].ToString());
-                    DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
+                    int folderId = DocumentRepository.DbSingleton.GetFolderId(Session["FolderPath"].ToString());
+                    DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
 
                     DeleteFile(filePath);
                 }
@@ -300,7 +300,7 @@ namespace DocumentRepositoryOnline.Controllers
                     String folderName = splitter[splitter.Length - 1];
                     directoryInfo.MoveTo(Session["FolderPath"].ToString() + "\\" + folderName);
 
-                    DocumentRepository.DBSingleton.DeleteFolder(folderPath);
+                    DocumentRepository.DbSingleton.DeleteFolder(folderPath);
 
                     WriteWholeFolderToDb(Session["FolderPath"].ToString() + "\\" + folderName);
 
@@ -321,24 +321,24 @@ namespace DocumentRepositoryOnline.Controllers
         {
             DirectoryInfo directory = new DirectoryInfo(folderPath);
 
-            int parentFolderId = DocumentRepository.DBSingleton.GetFolderId(Session["FolderPath"].ToString());
-            DocumentRepository.DBSingleton.WriteFolderWeb(folderPath, parentFolderId, 1);
+            int parentFolderId = DocumentRepository.DbSingleton.GetFolderId(Session["FolderPath"].ToString());
+            DocumentRepository.DbSingleton.WriteFolderWeb(folderPath, parentFolderId, 1);
 
-            int currentFolderId = DocumentRepository.DBSingleton.GetFolderId(folderPath);
+            int currentFolderId = DocumentRepository.DbSingleton.GetFolderId(folderPath);
             foreach (FileInfo fileInfo in directory.GetFiles())
             {
-                DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), currentFolderId);
+                DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), currentFolderId);
             }
 
             foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
             {
                 String parentFolderPath = dir.Parent.FullName;
-                int parentId = DocumentRepository.DBSingleton.GetFolderId(parentFolderPath);
-                DocumentRepository.DBSingleton.WriteFolderWeb(parentFolderPath + "\\" + dir.Name, parentId, 1);
-                int thisFolderId = DocumentRepository.DBSingleton.GetFolderId(parentFolderPath + "\\" + dir.Name);
+                int parentId = DocumentRepository.DbSingleton.GetFolderId(parentFolderPath);
+                DocumentRepository.DbSingleton.WriteFolderWeb(parentFolderPath + "\\" + dir.Name, parentId, 1);
+                int thisFolderId = DocumentRepository.DbSingleton.GetFolderId(parentFolderPath + "\\" + dir.Name);
                 foreach (FileInfo fileInfo in dir.GetFiles())
                 {
-                    DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), thisFolderId);
+                    DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), thisFolderId);
                 }
             }
         }
@@ -374,11 +374,11 @@ namespace DocumentRepositoryOnline.Controllers
                 {
                     Session["GroupPath"] = pathGroup;
 
-                    int folderId = DocumentRepository.DBSingleton.GetFolderId(pathGroup);
-                    foldersAndFiles.FileList = DocumentRepository.DBSingleton.ReadFileDetailsByFolderId(folderId);
+                    int folderId = DocumentRepository.DbSingleton.GetFolderId(pathGroup);
+                    foldersAndFiles.FileList = DocumentRepository.DbSingleton.ReadFileDetailsByFolderId(folderId);
                     foldersAndFiles.FileList.FileDetailsList.Sort();
 
-                    subfolderList = DocumentRepository.DBSingleton.GetSubfolders(folderId);
+                    subfolderList = DocumentRepository.DbSingleton.GetSubfolders(folderId);
                     Folders folders = new Folders();
                     folders.FolderList = subfolderList;
 
@@ -387,11 +387,11 @@ namespace DocumentRepositoryOnline.Controllers
                 }
                 else
                 {
-                    int folderId = DocumentRepository.DBSingleton.GetFolderId(Session["GroupPath"].ToString());
-                    subfolderList = DocumentRepository.DBSingleton.GetSubfolders(folderId);
+                    int folderId = DocumentRepository.DbSingleton.GetFolderId(Session["GroupPath"].ToString());
+                    subfolderList = DocumentRepository.DbSingleton.GetSubfolders(folderId);
                     Folders folders = new Folders {FolderList = subfolderList};
 
-                    foldersAndFiles.FileList = DocumentRepository.DBSingleton.ReadFileDetailsByFolderId(folderId);
+                    foldersAndFiles.FileList = DocumentRepository.DbSingleton.ReadFileDetailsByFolderId(folderId);
                     foldersAndFiles.FileList.FileDetailsList.Sort();
 
                     foldersAndFiles.FolderList = folders;
@@ -415,7 +415,7 @@ namespace DocumentRepositoryOnline.Controllers
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
-                        DocumentRepository.DBSingleton.WriteFolderWeb(path, null, 1);
+                        DocumentRepository.DbSingleton.WriteFolderWeb(path, null, 1);
                     }
 
                     foreach (HttpPostedFileBase file in files)
@@ -427,8 +427,8 @@ namespace DocumentRepositoryOnline.Controllers
                             file.SaveAs(filePath);
                             FileInfo fileInfo = new FileInfo(filePath);
 
-                            int folderId = DocumentRepository.DBSingleton.GetFolderId(path);
-                            DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
+                            int folderId = DocumentRepository.DbSingleton.GetFolderId(path);
+                            DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
 
                             ViewBag.Message = "File Uploaded Successfully!!";
                         }
@@ -453,8 +453,8 @@ namespace DocumentRepositoryOnline.Controllers
                             string filePath = path + "\\" + fileName;
                             file.SaveAs(filePath);
                             FileInfo fileInfo = new FileInfo(filePath);
-                            int folderId = DocumentRepository.DBSingleton.GetFolderId(path);
-                            DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
+                            int folderId = DocumentRepository.DbSingleton.GetFolderId(path);
+                            DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
                         }
                     }
                 }
@@ -465,7 +465,7 @@ namespace DocumentRepositoryOnline.Controllers
                 }
                 else if (files.Count > 1)
                 {
-                    ViewBag.Message = "Files Uploaded Successfully!!";
+                    ViewBag.Message = "FilesQueue Uploaded Successfully!!";
                 }
 
                 return RedirectToAction("GroupContent");
@@ -491,9 +491,9 @@ namespace DocumentRepositoryOnline.Controllers
             {
                 if (Session["GroupPath"] == null || Session["GroupPath"].ToString() == path)
                 {
-                    if (!DocumentRepository.DBSingleton.VerifyFolderPathExists(path))
+                    if (!DocumentRepository.DbSingleton.VerifyFolderPathExists(path))
                     {
-                        DocumentRepository.DBSingleton.WriteFolderWeb(path, null, 1);
+                        DocumentRepository.DbSingleton.WriteFolderWeb(path, null, 1);
                     }
                 }
                 else
@@ -502,8 +502,8 @@ namespace DocumentRepositoryOnline.Controllers
                 }
 
                 String pathAndFolderName = path + "\\" + foldersAndFiles.CreateFolderPath;
-                DocumentRepository.DBSingleton.WriteFolderWeb(pathAndFolderName,
-                    DocumentRepository.DBSingleton.GetFolderId(path),
+                DocumentRepository.DbSingleton.WriteFolderWeb(pathAndFolderName,
+                    DocumentRepository.DbSingleton.GetFolderId(path),
                     1);
                 Directory.CreateDirectory(pathAndFolderName);
             }
@@ -547,7 +547,7 @@ namespace DocumentRepositoryOnline.Controllers
         public ActionResult GroupDeleteFile(String filePath)
         {
             FileInfo file = new FileInfo(filePath);
-            DocumentRepository.DBSingleton.DeleteFile(filePath);
+            DocumentRepository.DbSingleton.DeleteFile(filePath);
             file.Delete();
 
             return RedirectToAction("GroupContent");
@@ -558,7 +558,7 @@ namespace DocumentRepositoryOnline.Controllers
             try
             {
                 DirectoryInfo directory = new DirectoryInfo(folderPath);
-                DocumentRepository.DBSingleton.DeleteFolder(folderPath);
+                DocumentRepository.DbSingleton.DeleteFolder(folderPath);
                 directory.Delete(true);
             }
             catch
@@ -598,8 +598,8 @@ namespace DocumentRepositoryOnline.Controllers
                 string[] splitter = filePath.Split('\\');
                 String fileName = splitter[splitter.Length - 1];
                 fileInfo.MoveTo(Session["GroupPath"].ToString() + "\\" + fileName);
-                int folderId = DocumentRepository.DBSingleton.GetFolderId(Session["GroupPath"].ToString());
-                DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
+                int folderId = DocumentRepository.DbSingleton.GetFolderId(Session["GroupPath"].ToString());
+                DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), folderId);
 
                 DeleteFile(filePath);
             }
@@ -613,7 +613,7 @@ namespace DocumentRepositoryOnline.Controllers
                 String folderName = splitter[splitter.Length - 1];
                 directoryInfo.MoveTo(Session["GroupPath"].ToString() + "\\" + folderName);
 
-                DocumentRepository.DBSingleton.DeleteFolder(folderPath);
+                DocumentRepository.DbSingleton.DeleteFolder(folderPath);
 
                 GroupWriteWholeFolderToDb(Session["GroupPath"].ToString() + "\\" + folderName);
 
@@ -629,13 +629,13 @@ namespace DocumentRepositoryOnline.Controllers
         {
             DirectoryInfo directory = new DirectoryInfo(folderPath);
 
-            int parentFolderId = DocumentRepository.DBSingleton.GetFolderId(Session["GroupPath"].ToString());
-            DocumentRepository.DBSingleton.WriteFolderWeb(folderPath, parentFolderId, 1);
+            int parentFolderId = DocumentRepository.DbSingleton.GetFolderId(Session["GroupPath"].ToString());
+            DocumentRepository.DbSingleton.WriteFolderWeb(folderPath, parentFolderId, 1);
 
-            int currentFolderId = DocumentRepository.DBSingleton.GetFolderId(folderPath);
+            int currentFolderId = DocumentRepository.DbSingleton.GetFolderId(folderPath);
             foreach (FileInfo fileInfo in directory.GetFiles())
             {
-                DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), currentFolderId);
+                DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), currentFolderId);
             }
 
             foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
@@ -643,12 +643,12 @@ namespace DocumentRepositoryOnline.Controllers
                 if (dir.Parent != null)
                 {
                     String parentFolderPath = dir.Parent.FullName;
-                    int parentId = DocumentRepository.DBSingleton.GetFolderId(parentFolderPath);
-                    DocumentRepository.DBSingleton.WriteFolderWeb(parentFolderPath + "\\" + dir.Name, parentId, 1);
-                    int thisFolderId = DocumentRepository.DBSingleton.GetFolderId(parentFolderPath + "\\" + dir.Name);
+                    int parentId = DocumentRepository.DbSingleton.GetFolderId(parentFolderPath);
+                    DocumentRepository.DbSingleton.WriteFolderWeb(parentFolderPath + "\\" + dir.Name, parentId, 1);
+                    int thisFolderId = DocumentRepository.DbSingleton.GetFolderId(parentFolderPath + "\\" + dir.Name);
                     foreach (FileInfo fileInfo in dir.GetFiles())
                     {
-                        DocumentRepository.DBSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), thisFolderId);
+                        DocumentRepository.DbSingleton.WriteWeb(fileInfo, Session["Email"].ToString(), thisFolderId);
                     }
                 }
             }
@@ -667,13 +667,13 @@ namespace DocumentRepositoryOnline.Controllers
 
             string[] splitter = rootPath.Split('\\');
             String groupName = splitter[splitter.Length - 1];
-            int groupId = DocumentRepository.DBSingleton.GetGroupId(groupName);
+            int groupId = DocumentRepository.DbSingleton.GetGroupId(groupName);
 
             if (foldersAndFiles.AddEmail != null)
             {
                 if (foldersAndFiles.AddEmail != "")
                 {
-                    DocumentRepository.DBSingleton.AddGroupMember(groupId, foldersAndFiles.AddEmail, "member");
+                    DocumentRepository.DbSingleton.AddGroupMember(groupId, foldersAndFiles.AddEmail, "member");
                     return RedirectToAction("GroupContent");
                 }
             }
@@ -688,9 +688,9 @@ namespace DocumentRepositoryOnline.Controllers
                 String rootPath = Session["RootPath"].ToString();
                 string[] splitter = rootPath.Split('\\');
                 String groupName = splitter[splitter.Length - 1];
-                int groupId = DocumentRepository.DBSingleton.GetGroupId(groupName);
+                int groupId = DocumentRepository.DbSingleton.GetGroupId(groupName);
 
-                var groupMembers = DocumentRepository.DBSingleton.GetGroupMembers(groupId);
+                var groupMembers = DocumentRepository.DbSingleton.GetGroupMembers(groupId);
                 return View(groupMembers);
             }
             catch
@@ -717,7 +717,7 @@ namespace DocumentRepositoryOnline.Controllers
         public ActionResult SearchGroup(Search search)
         {
             search.RecordList = DocumentRepository
-                .DBSingleton
+                .DbSingleton
                 .SearchContent(
                     search.Content,
                     search.PagesMin,
@@ -764,9 +764,9 @@ namespace DocumentRepositoryOnline.Controllers
 
             string[] splitter = rootPath.Split('\\');
             String groupName = splitter[splitter.Length - 1];
-            int groupId = DocumentRepository.DBSingleton.GetGroupId(groupName);
+            int groupId = DocumentRepository.DbSingleton.GetGroupId(groupName);
 
-            DocumentRepository.DBSingleton.DeleteGroupMember(memberEmail, groupId);
+            DocumentRepository.DbSingleton.DeleteGroupMember(memberEmail, groupId);
             return RedirectToAction("ViewMemberList");
         }
     }

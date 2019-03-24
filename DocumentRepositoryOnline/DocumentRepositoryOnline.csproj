@@ -185,6 +185,10 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\StorageController.cs" />
     <Compile Include="DocumentRepository\DBSingleton.cs" />
+    <Compile Include="DocumentRepository\FileHandlers\DbFileWriters\DbFileWriter.cs" />
+    <Compile Include="DocumentRepository\FileHandlers\FileDetails.cs" />
+    <Compile Include="DocumentRepository\FileHandlers\DbFileWriters\IDbFileWriter.cs" />
+    <Compile Include="DocumentRepository\FileHandlers\IFileHandler.cs" />
     <Compile Include="DocumentRepository\FileHandlers\OfficeHandler.cs" />
     <Compile Include="DocumentRepository\FileHandlers\PdfHandler.cs" />
     <Compile Include="DocumentRepository\FileHandlers\TextHandler.cs" />

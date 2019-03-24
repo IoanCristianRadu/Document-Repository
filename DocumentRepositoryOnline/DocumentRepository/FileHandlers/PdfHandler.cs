@@ -1,30 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 {
-    public class PdfHandler : TextHandler
+    public class PdfHandler : IFileHandler
     {
-        public PdfHandler(FileInfo f) : base(f)
+        public FileDetails FileData;
+
+        public PdfHandler(FileInfo f)
         {
+            FileData = new FileDetails(
+                f.LastWriteTime,
+                f.CreationTime,
+                f.Extension,
+                System.IO.File.GetAccessControl(f.FullName)
+                    .GetOwner(typeof(System.Security.Principal.NTAccount))
+                    .ToString(),
+                f.Name,
+                1,
+                f.FullName,
+                f.Name,
+                f.Length / 1024);
+
+            if (FileData.FileSize == 0)
+            {
+                FileData.FileSize = 1;
+            }
         }
 
-        public override void ExtractContent()
+        public void ExtractContent()
         {
-            if (String.Compare(this.Path, "") != 0)
+            if (String.Compare(FileData.Path, "") != 0)
             {
-                PdfReader pdfReader = new PdfReader(this.Path);
-                this.Pages = pdfReader.NumberOfPages;
+                PdfReader pdfReader = new PdfReader(FileData.Path);
+                FileData.Pages = pdfReader.NumberOfPages;
                 for (int page = 1; page <= pdfReader.NumberOfPages; page++)
                 {
                     ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
@@ -32,11 +44,21 @@ namespace DocumentRepositoryOnline.DocumentRepository.FileHandlers
 
                     currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8,
                         Encoding.Default.GetBytes(currentText)));
-                    Content.Add(currentText);
+                    FileData.Content.Add(currentText);
                 }
 
                 pdfReader.Close();
             }
+        }
+
+        public void WriteToDb(IDbFileWriter dbFileWriter)
+        {
+            dbFileWriter.WriteToDb(FileData);
+        }
+
+        public FileDetails getFileDetails()
+        {
+            return FileData;
         }
     }
 }
